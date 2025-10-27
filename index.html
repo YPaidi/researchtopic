@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Research Topic Game — East Asian Studies (Malaysia)</title>
+  <meta name="description" content="Pick interests, rate capabilities, and get research topic suggestions with a game-like experience." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { height: 100%; }
+  </style>
+</head>
+<body class="bg-slate-50">
+  <div id="root"></div>
+
+  <!-- React + ReactDOM + Babel (for in-browser JSX transpile) -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    // Minimal inline SVG icons (no external deps)
+    const Icon = ({ path, className }) => (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+           strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d={path} />
+      </svg>
+    );
+    const Sparkles = (p) => <Icon {...p} path="M12 3l1.8 3.6L18 8.4l-3.6 1.8L12 14l-1.8-3.6L6 8.4l3.6-1.8L12 3z" />;
+    const CheckCircle2 = (p) => <Icon {...p} path="M12 22a10 10 0 100-20 10 10 0 000 20zm-2-7l-2-2m2 2l6-6" />;
+    const Flame = (p) => <Icon {...p} path="M12 2s4 4 4 8a4 4 0 11-8 0c0-4 4-8 4-8z" />;
+    const Brain = (p) => <Icon {...p} path="M8 6a4 4 0 000 8h1v-6H8zm7 0h-1v6h1a4 4 0 000-8z" />;
+    const Target = (p) => <Icon {...p} path="M12 22a10 10 0 110-20 10 10 0 010 20zm0-6a4 4 0 100-8 4 4 0 000 8z" />;
+    const Timer = (p) => <Icon {...p} path="M10 2h4M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />;
+    const Download = (p) => <Icon {...p} path="M12 3v10m0 0l-3-3m3 3l3-3M5 21h14" />;
+    const MapPin = (p) => <Icon {...p} path="M12 21s7-4.35 7-10a7 7 0 10-14 0c0 5.65 7 10 7 10z" />;
+
+    const INTERESTS = [
+      "East Asia (Comparative/Regional)",
+      "China (PRC & Greater China)",
+      "Japan",
+      "Korea (ROK & DPRK)",
+      "Overseas Chinese/Japanese/Korean Diasporas",
+      "Malaysia–East Asia Relations",
+      "Society & Social Change",
+      "Culture & Everyday Life",
+      "Popular Culture & Media",
+      "Digital Culture & Platforms",
+      "Language Policy & Planning",
+      "Sociolinguistics",
+      "Language Education & Pedagogy",
+      "Translation & Interpreting",
+      "Writing Systems & Literacy",
+      "History (Pre‑modern)",
+      "History (Modern & Contemporary)",
+      "Colonialism & Postcoloniality",
+      "Memory, Heritage & Museums",
+      "Religion & Philosophy",
+      "Gender, Sexuality & Family",
+      "Youth, Education & Student Life",
+      "Demography, Migration & Diaspora",
+      "Urbanization, Housing & Infrastructure",
+      "Rural Studies & Agriculture",
+      "Economy & Development",
+      "Business, Management & Work Culture",
+      "Trade, FDI & Supply Chains",
+      "Entrepreneurship & SMEs",
+      "Corporate Governance, CSR & ESG",
+      "Law, Governance & Public Policy",
+      "Politics, Elections & Civil Society",
+      "International Relations & Security",
+      "Diplomacy, Soft Power & Cultural Exchange",
+      "Media, Journalism & Public Opinion",
+      "Technology, Innovation & Industry 4.0",
+      "AI, Data Governance & Privacy",
+      "Environment, Climate & Energy Transitions",
+      "Health, Healthcare & Public Health",
+      "Tourism, Heritage Routes & Creative Industries",
+      "Arts, Literature & Aesthetics",
+      "Foodways & Material Culture",
+      "Sport & Leisure Studies",
+      "Methods: Ethnography",
+      "Methods: Archival & Document Analysis",
+      "Methods: Survey & Experiments",
+      "Methods: Quantitative/Statistics",
+      "Methods: Digital Humanities & GIS/Mapping",
+      "Methods: Computational Social Science",
+      "Comparative & Cross‑Cultural Studies"
+    ];
+
+    const SKILLS = [
+      { key: "literature", label: "Literature Review" },
+      { key: "qualitative", label: "Qualitative Interviewing" },
+      { key: "quantitative", label: "Quantitative/Stats" },
+      { key: "coding", label: "Data/Code (Excel/R/Python)" },
+      { key: "fieldwork", label: "Fieldwork/Observation" },
+      { key: "writing", label: "Academic Writing" },
+      { key: "language", label: "Language Proficiency (CN/JP/KR)" },
+      { key: "archival", label: "Archival/Document Analysis" },
+      { key: "dh", label: "Digital Humanities/Mapping" }
+    ];
+
+    const TOPICS = [
+      {"id":"ea1","title":"Japanese Companies in Malaysia: CSR & Community Engagement","tags":["Japanese Studies (Malaysia)","Business & Economy","Law & Policy"],"description":"Case studies of CSR by Japanese‑affiliated firms in Malaysia; document analysis plus brief stakeholder interviews.","skills":{"literature":3,"qualitative":3,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":3,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
+      {"id":"ea2","title":"K‑pop Fan Labor, Identity, and Community in Kuala Lumpur","tags":["Korean Studies (Malaysia)","Pop Culture & Media","Gender & Family"],"description":"Explore how K‑pop fans coordinate events, translations, and fundraising; interviews + small survey.","skills":{"literature":3,"qualitative":4,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":1,"dh":1},"needs":{"travel":false,"ethics":true},"timeDemand":3},
+      {"id":"ea3","title":"Chinese‑Medium Education and Language Maintenance","tags":["Chinese Studies (Malaysia)","Language & Education","History & Heritage"],"description":"Investigate how Chinese‑medium schooling shapes language maintenance and identity; school policy docs + interviews.","skills":{"literature":4,"qualitative":3,"quantitative":2,"coding":1,"fieldwork":2,"writing":3,"language":2,"archival":2,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
+      {"id":"ea4","title":"Dual‑Coding Aids for Beginner Kanji in Malaysian Classrooms","tags":["Japanese Studies (Malaysia)","Language & Education","Digital Humanities & Mapping"],"description":"Design pictorial + audio aids for 20 beginner kanji and test recall over two weeks (pre/post).","skills":{"literature":3,"qualitative":1,"quantitative":3,"coding":2,"fieldwork":1,"writing":3,"language":2,"archival":0,"dh":2},"needs":{"travel":false,"ethics":true},"timeDemand":3},
+      {"id":"ea5","title":"Motivations for Korean Language Study at Malaysian Universities","tags":["Korean Studies (Malaysia)","Language & Education"],"description":"Survey + interviews on why students choose Korean language; link to employability and pop‑culture exposure.","skills":{"literature":3,"qualitative":3,"quantitative":2,"coding":1,"fieldwork":1,"writing":3,"language":1,"archival":0,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":2},
+      {"id":"ea6","title":"Anime/Manga Influence on Malaysian Creative Industries","tags":["Japanese Studies (Malaysia)","Pop Culture & Media","Business & Economy"],"description":"Analyze how anime/manga aesthetics inform local design, comics, and merchandising; content + interviews.","skills":{"literature":2,"qualitative":2,"quantitative":2,"coding":2,"fieldwork":1,"writing":3,"language":1,"archival":1,"dh":1},"needs":{"travel":false,"ethics":true},"timeDemand":2},
+      {"id":"ea7","title":"East Asian Foodways and Diaspora Identity in Penang","tags":["Chinese Studies (Malaysia)","Japanese Studies (Malaysia)","Korean Studies (Malaysia)","Diaspora & Migration","History & Heritage"],"description":"Field observations and micro‑interviews in selected neighborhoods to map food, memory, and identity.","skills":{"literature":3,"qualitative":3,"quantitative":1,"coding":1,"fieldwork":3,"writing":3,"language":1,"archival":2,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
+      {"id":"ea8","title":"Belt and Road in Malaysian Media: Framing & Public Opinion","tags":["Chinese Studies (Malaysia)","Law & Policy","Pop Culture & Media"],"description":"Content analysis of local news and social posts on BRI; identify frames and sentiment over time.","skills":{"literature":3,"qualitative":2,"quantitative":3,"coding":2,"fieldwork":0,"writing":3,"language":2,"archival":1,"dh":1},"needs":{"travel":false,"ethics":false},"timeDemand":3},
+      {"id":"ea9","title":"K‑Beauty Adoption in Malaysia: Consumers and Influencers","tags":["Korean Studies (Malaysia)","Business & Economy","Pop Culture & Media"],"description":"Short survey + influencer post analysis to examine purchase intentions and brand trust.","skills":{"literature":2,"qualitative":2,"quantitative":3,"coding":2,"fieldwork":0,"writing":3,"language":0,"archival":0,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":2},
+      {"id":"ea10","title":"Bon Odori in Malaysia: Policy, Religion, and Public Discourse","tags":["Japanese Studies (Malaysia)","Law & Policy","History & Heritage"],"description":"Document controversy timelines, analyze statements, and conduct interviews with organizers/attendees.","skills":{"literature":3,"qualitative":3,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":2,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":3},
+      {"id":"ea11","title":"Mapping Japanese‑Affiliated Firms in Malaysia (JeMA:LIS)","tags":["Japanese Studies (Malaysia)","Business & Economy","Digital Humanities & Mapping"],"description":"Clean and geocode company data; build an interactive map to explore spatial/sectoral patterns.","skills":{"literature":2,"qualitative":1,"quantitative":3,"coding":3,"fieldwork":0,"writing":3,"language":1,"archival":1,"dh":4},"needs":{"travel":false,"ethics":false},"timeDemand":3},
+      {"id":"ea12","title":"Workplace Culture in East Asian‑Owned Firms in Malaysia","tags":["Chinese Studies (Malaysia)","Japanese Studies (Malaysia)","Korean Studies (Malaysia)","Business & Economy"],"description":"Interviews with employees to compare communication, hierarchy, and work expectations across firms.","skills":{"literature":3,"qualitative":4,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":0,"dh":0},"needs":{"travel":true,"ethics":true},"timeDemand":4},
+      {"id":"ea13","title":"Social Media Sentiment on China/Japan/Korea in Malaysia","tags":["Digital Humanities & Mapping","Technology & Society","Pop Culture & Media"],"description":"Collect public posts (APIs/exports), run basic sentiment classification, and compare topic trends.","skills":{"literature":2,"qualitative":1,"quantitative":3,"coding":3,"fieldwork":0,"writing":3,"language":1,"archival":0,"dh":3},"needs":{"travel":false,"ethics":false},"timeDemand":3},
+      {"id":"ea14","title":"Heritage Trails: East Asian Sites in Kuala Lumpur","tags":["History & Heritage","Digital Humanities & Mapping","Chinese Studies (Malaysia)","Japanese Studies (Malaysia)","Korean Studies (Malaysia)"],"description":"Create a digital heritage trail (map/story map) linking sites, oral histories, and archival images.","skills":{"literature":3,"qualitative":2,"quantitative":1,"coding":2,"fieldwork":3,"writing":3,"language":1,"archival":3,"dh":3},"needs":{"travel":true,"ethics":false},"timeDemand":4},
+      {"id":"ea15","title":"Chinese Tech Platforms and Malaysian SMEs: Cross‑Border E‑Commerce","tags":["Chinese Studies (Malaysia)","Business & Economy","Technology & Society"],"description":"How Malaysian SMEs use China‑linked platforms (e‑commerce, payments, logistics); interviews + small analytics.","skills":{"literature":3,"qualitative":3,"quantitative":2,"coding":2,"fieldwork":1,"writing":3,"language":1,"archival":1,"dh":1},"needs":{"travel":false,"ethics":true},"timeDemand":3},
+      {"id":"ea16","title":"Internships in Japanese Firms: Work Culture Socialization in Malaysia","tags":["Japanese Studies (Malaysia)","Business & Economy","Culture & Everyday Life"],"description":"Student experiences of hierarchy, teamwork, and communication in Japanese‑affiliated workplaces; qualitative study.","skills":{"literature":3,"qualitative":4,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":0,"dh":0},"needs":{"travel":true,"ethics":true},"timeDemand":3},
+      {"id":"ea17","title":"Korean Food Franchises in Klang Valley: Localization Strategies","tags":["Korean Studies (Malaysia)","Business & Economy","Culture & Everyday Life"],"description":"Menu, branding, and service adaptations in K‑food chains; content analysis + manager interviews.","skills":{"literature":2,"qualitative":3,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":0,"archival":0,"dh":0},"needs":{"travel":true,"ethics":true},"timeDemand":3},
+      {"id":"ea18","title":"Language Policy for East Asian Languages in Malaysian Universities","tags":["Language Policy & Planning","Language & Education","Malaysia–East Asia Relations"],"description":"Document analysis of elective offerings (CN/JP/KR), staffing, and policy rationales; admin interviews.","skills":{"literature":4,"qualitative":2,"quantitative":1,"coding":1,"fieldwork":1,"writing":3,"language":1,"archival":3,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":2},
+      {"id":"ea19","title":"Anime Conventions and Soft Power in Malaysia","tags":["Japanese Studies (Malaysia)","Pop Culture & Media","Diplomacy, Soft Power & Cultural Exchange"],"description":"Event ethnography + survey to measure cultural attachment and perceived Japan image among attendees.","skills":{"literature":3,"qualitative":3,"quantitative":2,"coding":1,"fieldwork":3,"writing":3,"language":0,"archival":0,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
+      {"id":"ea20","title":"Traditional Chinese Medicine in Malaysia: Practice and Regulation","tags":["Chinese Studies (Malaysia)","Health, Healthcare & Public Health","Law & Policy"],"description":"Map TCM clinics, analyze regulatory documents, and interview practitioners on integration with public health.","skills":{"literature":4,"qualitative":3,"quantitative":1,"coding":2,"fieldwork":2,"writing":3,"language":1,"archival":3,"dh":2},"needs":{"travel":true,"ethics":true},"timeDemand":4},
+      {"id":"ea21","title":"Framing East Asia in Malaysian Newsrooms","tags":["Media, Journalism & Public Opinion","International Relations & Security","East Asia (Comparative/Regional)"],"description":"Content + discourse analysis of Malaysia‑based media coverage of China/Japan/Korea over the last year.","skills":{"literature":3,"qualitative":2,"quantitative":2,"coding":2,"fieldwork":0,"writing":3,"language":0,"archival":2,"dh":1},"needs":{"travel":false,"ethics":false},"timeDemand":3},
+      {"id":"ea22","title":"Short‑Video Content Flows from East Asia and Malaysian Youth","tags":["Digital Culture & Platforms","Pop Culture & Media","Youth, Education & Student Life"],"description":"Track content genres and engagement from CN/JP/KR origin accounts; diary study + platform metadata sampling.","skills":{"literature":2,"qualitative":2,"quantitative":3,"coding":3,"fieldwork":1,"writing":3,"language":0,"archival":0,"dh":2},"needs":{"travel":false,"ethics":true},"timeDemand":3},
+      {"id":"ea23","title":"Translanguaging in K‑pop Fan Subbing Communities (Malaysia)","tags":["Sociolinguistics","Pop Culture & Media","Korean Studies (Malaysia)"],"description":"Analyze fan translations and comment threads for code‑switching and stance; corpus + interviews.","skills":{"literature":3,"qualitative":3,"quantitative":1,"coding":2,"fieldwork":1,"writing":3,"language":2,"archival":1,"dh":2},"needs":{"travel":false,"ethics":true},"timeDemand":3},
+      {"id":"ea24","title":"Family Memories of the Japanese Occupation","tags":["History (Modern & Contemporary)","Memory, Heritage & Museums","Japanese Studies (Malaysia)"],"description":"Oral histories and photo/letter archives to document intergenerational memory and local narratives.","skills":{"literature":3,"qualitative":4,"quantitative":0,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":4,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
+      {"id":"ea25","title":"Malaysia and North Korea: A Documentary Timeline (2000–2020)","tags":["Korea (ROK & DPRK)","International Relations & Security","Law & Policy"],"description":"Compile statements, sanctions, and diplomatic incidents; analyze shifts in policy narratives.","skills":{"literature":3,"qualitative":2,"quantitative":0,"coding":1,"fieldwork":0,"writing":3,"language":0,"archival":4,"dh":1},"needs":{"travel":false,"ethics":false},"timeDemand":2},
+      {"id":"ea26","title":"Chinese FDI and Supply Chains: The Case of MCKIP","tags":["Chinese Studies (Malaysia)","Trade, FDI & Supply Chains","Economy & Development"],"description":"Policy docs + firm reports to assess investment drivers, employment, and local linkages; basic input–output view.","skills":{"literature":4,"qualitative":2,"quantitative":2,"coding":2,"fieldwork":1,"writing":3,"language":1,"archival":2,"dh":1},"needs":{"travel":true,"ethics":false},"timeDemand":4},
+      {"id":"ea27","title":"Japanese Language Learning and Employability in Malaysia","tags":["Japanese Studies (Malaysia)","Language & Education","Business & Economy"],"description":"Survey employers and students on JLPT levels, internships, and hiring signals; link to job postings.","skills":{"literature":3,"qualitative":2,"quantitative":3,"coding":2,"fieldwork":1,"writing":3,"language":2,"archival":0,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":3},
+      {"id":"ea28","title":"ESG Reporting by East Asian Subsidiaries in Malaysia","tags":["Corporate Governance, CSR & ESG","Business & Economy","East Asia (Comparative/Regional)"],"description":"Compare ESG disclosures of CN/JP/KR subsidiaries; score themes and alignment with local regulations.","skills":{"literature":3,"qualitative":2,"quantitative":2,"coding":2,"fieldwork":0,"writing":3,"language":0,"archival":3,"dh":1},"needs":{"travel":false,"ethics":false},"timeDemand":3},
+      {"id":"ea29","title":"Privacy Attitudes among WeChat/LINE/Kakao Users in Malaysia","tags":["AI, Data Governance & Privacy","Technology & Society","East Asia (Comparative/Regional)"],"description":"Survey + vignettes to measure trust and data‑sharing norms across app ecosystems.","skills":{"literature":3,"qualitative":2,"quantitative":3,"coding":2,"fieldwork":0,"writing":3,"language":0,"archival":0,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":2},
+      {"id":"ea30","title":"Anime Tourism and Domestic Travel in Malaysia","tags":["Tourism, Heritage Routes & Creative Industries","Pop Culture & Media","Japanese Studies (Malaysia)"],"description":"Link pop‑culture events to local travel intentions and spending; intercept surveys at events.","skills":{"literature":2,"qualitative":2,"quantitative":3,"coding":1,"fieldwork":2,"writing":3,"language":0,"archival":0,"dh":0},"needs":{"travel":true,"ethics":true},"timeDemand":3}
+    ];
+
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+    function calcFit(topic, profile) {
+      const WEIGHTS = { interests: 0.55, capability: 0.35, constraints: 0.10 };
+
+      const overlap = topic.tags.filter(t => profile.interests.includes(t)).length;
+      const interestScore = topic.tags.length ? (overlap / topic.tags.length) * 100 : 0;
+
+      const gapSum = [
+        ...SKILLS.map(s => s.key)
+      ].reduce((sum, key) => {
+        const req = topic.skills[key] || 0;
+        const me = profile.skills[key] || 0;
+        return sum + Math.max(0, req - me);
+      }, 0);
+      const capabilityScore = clamp(100 - gapSum * 15, 0, 100);
+
+      let penalty = 0;
+      if (topic.needs.travel && profile.travel < 3) penalty += 30;
+      if (topic.needs.ethics && !profile.ethicsReady) penalty += 20;
+      if (profile.timePerWeek < topic.timeDemand * 3) penalty += 20;
+      const constraintsScore = clamp(100 - penalty, 0, 100);
+
+      const finalScore = clamp(
+        interestScore * WEIGHTS.interests +
+        capabilityScore * WEIGHTS.capability +
+        constraintsScore * WEIGHTS.constraints,
+        0, 100
+      );
+
+      return { interestScore, capabilityScore, constraintsScore, finalScore };
+    }
+
+    function useBadges(progress, bestScore) {
+      const badges = [];
+      if (progress >= 25) badges.push({ id: "b1", name: "Curious Mind", desc: "Selected interests" });
+      if (progress >= 50) badges.push({ id: "b2", name: "Self‑Aware Scholar", desc: "Rated your skills" });
+      if (progress >= 75) badges.push({ id: "b3", name: "Strategist", desc: "Set constraints" });
+      if (bestScore >= 80) badges.push({ id: "b4", name: "Strong Fit", desc: "High‑match topic" });
+      return badges;
+    }
+
+    function buildQuestPlan(topic) {
+      if (!topic) return [];
+      return [
+        { id: "q1", title: "Sharpen Your Question", detail: "Rewrite the topic as a precise RQ (what, who, where, when).", xp: 50 },
+        { id: "q2", title: "Mini‑Literature Sprint", detail: "Collect 8–10 credible sources; summarize each in 2–3 sentences.", xp: 80 },
+        { id: "q3", title: "Method Match", detail: "Choose methods that fit your question (interview, survey, observation, experiment).", xp: 80 },
+        { id: "q4", title: "Ethics & Access", detail: "List data privacy, consent, and logistics; draft consent form if needed.", xp: 60 },
+        { id: "q5", title: "Timeline & Risk Map", detail: "Plan weekly milestones; identify 3 risks and mitigations.", xp: 80 }
+      ];
+    }
+
+    function App() {
+      const [step, setStep] = useState(1);
+      const [selectedInterests, setSelectedInterests] = useState([]);
+      const [skills, setSkills] = useState(Object.fromEntries(SKILLS.map(s => [s.key, 3])));
+      const [timePerWeek, setTimePerWeek] = useState(6);
+      const [travel, setTravel] = useState(3);
+      const [ethicsReady, setEthicsReady] = useState(false);
+      const [xp, setXp] = useState(0);
+      const [chosen, setChosen] = useState(null);
+
+      const profile = { interests: selectedInterests, skills, timePerWeek, travel, ethicsReady };
+
+      const progress = useMemo(() => {
+        let p = 0;
+        if (selectedInterests.length >= 3) p += 25;
+        if (Object.keys(skills).length === SKILLS.length) p += 25;
+        if (timePerWeek && travel) p += 25;
+        if (step >= 4) p += 25;
+        return p;
+      }, [selectedInterests, skills, timePerWeek, travel, step]);
+
+      const scored = useMemo(() => {
+        return TOPICS.map(t => ({
+          topic: t,
+          score: calcFit(t, profile)
+        })).sort((a, b) => b.score.finalScore - a.score.finalScore);
+      }, [profile]);
+
+      const bestScore = scored[0]?.score.finalScore || 0;
+      const badges = useBadges(progress, bestScore);
+
+      useEffect(() => {
+        setXp(Math.min(500, Math.round(progress * 2 + bestScore)));
+      }, [progress, bestScore]);
+
+      const questPlan = useMemo(() => buildQuestPlan(chosen?.topic), [chosen]);
+
+      function toggleInterest(item) {
+        setSelectedInterests(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
+      }
+
+      function exportPlan() {
+        const data = {
+          chosenTopic: chosen?.topic?.title || null,
+          reason: chosen ? chosen.reason : null,
+          profile,
+          questPlan
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "research-topic-plan.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-800">
+          <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b">
+            <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+              <Sparkles className="w-6 h-6 text-indigo-600" />
+              <h1 className="text-xl font-semibold">Research Topic Game — East Asian Studies (MY)</h1>
+              <div className="ml-auto flex items-center gap-3">
+                <div className="text-sm font-medium">XP</div>
+                <div className="px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 text-sm font-semibold">{xp}</div>
+                <div className="hidden md:flex items-center gap-2">
+                  {badges.map(b => (
+                    <span key={b.id} className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">
+                      ✓ {b.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <main className="max-w-5xl mx-auto px-4 py-6">
+            <div className="mb-6">
+              <div className="flex justify-between text-xs text-slate-500 mb-1">
+                <span>Progress</span><span>{progress}%</span>
+              </div>
+              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-full bg-indigo-600" style={{ width: progress + "%" }} />
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-12 gap-6">
+              <div className="md:col-span-8 space-y-6">
+                {step === 1 && (
+                  <section className="p-4 rounded-2xl shadow-sm border">
+                    <h2 className="text-lg font-semibold mb-1">Step 1 — Choose Your Interests</h2>
+                    <p className="text-sm text-slate-600 mb-3">Select at least three areas that excite you. We will prioritize topics that match these tags.</p>
+                    <div className="flex flex-wrap gap-2">
+                      {INTERESTS.map(item => (
+                        <button
+                          key={item}
+                          onClick={() => toggleInterest(item)}
+                          className={"px-3 py-1.5 rounded-full border text-sm transition " + (selectedInterests.includes(item) ? "bg-indigo-600 text-white border-indigo-600" : "bg-white hover:bg-slate-50")}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {step === 2 && (
+                  <section className="p-4 rounded-2xl shadow-sm border">
+                    <h2 className="text-lg font-semibold mb-1">Step 2 — Rate Your Capabilities</h2>
+                    <p className="text-sm text-slate-600 mb-3">Be honest—this helps the game suggest topics that fit you now. You can always grow.</p>
+                    <div className="space-y-4">
+                      {SKILLS.map(s => (
+                        <div key={s.key} className="grid grid-cols-1 md:grid-cols-6 items-center gap-3">
+                          <label className="md:col-span-2 text-sm font-medium">{s.label}</label>
+                          <input
+                            type="range"
+                            min={1}
+                            max={5}
+                            value={skills[s.key]}
+                            onChange={(e) => setSkills(prev => ({ ...prev, [s.key]: Number(e.target.value) }))}
+                            className="md:col-span-3 w-full"
+                          />
+                          <div className="md:col-span-1 text-right text-sm font-semibold">{skills[s.key]}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {step === 3 && (
+                  <section className="p-4 rounded-2xl shadow-sm border">
+                    <h2 className="text-lg font-semibold mb-1">Step 3 — Set Your Constraints</h2>
+                    <p className="text-sm text-slate-600 mb-3">Time, travel, and ethics readiness influence feasibility.</p>
+
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-6 items-center gap-3">
+                        <label className="md:col-span-2 text-sm font-medium flex items-center gap-2"><Timer className="w-4 h-4"/> Hours per week you can commit</label>
+                        <input type="range" min={2} max={20} value={timePerWeek} onChange={(e)=> setTimePerWeek(Number(e.target.value))} className="md:col-span-3 w-full" />
+                        <div className="md:col-span-1 text-right text-sm font-semibold">{timePerWeek}h</div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-6 items-center gap-3">
+                        <label className="md:col-span-2 text-sm font-medium flex items-center gap-2"><MapPin className="w-4 h-4"/> Travel/Field Access</label>
+                        <input type="range" min={1} max={5} value={travel} onChange={(e)=> setTravel(Number(e.target.value))} className="md:col-span-3 w-full" />
+                        <div className="md:col-span-1 text-right text-sm font-semibold">{travel}</div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <input id="ethics" type="checkbox" checked={ethicsReady} onChange={()=> setEthicsReady(v=>!v)} />
+                        <label htmlFor="ethics" className="text-sm">I am ready to follow basic research ethics (consent, privacy, minimal risk).</label>
+                      </div>
+                    </div>
+                  </section>
+                )}
+
+                {step >= 4 && (
+                  <section className="p-4 rounded-2xl shadow-sm border">
+                    <h2 className="text-lg font-semibold mb-1">Step 4 — Your Suggested Topics</h2>
+                    <p className="text-sm text-slate-600 mb-4">Top matches are shown first. Click “Accept Quest” to lock one in and get a starter plan.</p>
+
+                    <div className="space-y-4">
+                      {scored.slice(0, 8).map((item, idx) => (
+                        <div key={item.topic.id} className="p-4 rounded-xl border hover:shadow-sm transition bg-white">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <h3 className="font-semibold">{idx+1}. {item.topic.title}</h3>
+                              <p className="text-sm text-slate-600 mt-1">{item.topic.description}</p>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {item.topic.tags.map(t => (
+                                  <span key={t} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs">{t}</span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-2xl font-bold text-indigo-700">{Math.round(item.score.finalScore)}</div>
+                              <div className="text-xs text-slate-500">Fit score</div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-xs">
+                            <div className="p-2 rounded-lg bg-indigo-50">
+                              <div className="font-semibold">Interests</div>
+                              <div>{Math.round(item.score.interestScore)} / 100</div>
+                            </div>
+                            <div className="p-2 rounded-lg bg-emerald-50">
+                              <div className="font-semibold">Capabilities</div>
+                              <div>{Math.round(item.score.capabilityScore)} / 100</div>
+                            </div>
+                            <div className="p-2 rounded-lg bg-amber-50">
+                              <div className="font-semibold">Constraints</div>
+                              <div>{Math.round(item.score.constraintsScore)} / 100</div>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 flex items-center gap-2">
+                            <button
+                              className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
+                              onClick={() => setChosen({ topic: item.topic, reason: `High match with your interests (${item.topic.tags.filter(t=>selectedInterests.includes(t)).join(', ')}) and current skills.` })}
+                            >
+                              Accept Quest
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {chosen && (
+                  <section className="p-4 rounded-2xl shadow-sm border">
+                    <h2 className="text-lg font-semibold mb-1">Your Quest Plan</h2>
+                    <p className="text-sm text-slate-600 mb-3">Locked topic: <span className="font-semibold">{chosen.topic.title}</span>. Reason: {chosen.reason}</p>
+                    <ol className="space-y-2">
+                      {questPlan.map(q => (
+                        <li key={q.id} className="p-3 rounded-lg border flex items-start gap-3">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5"/>
+                          <div>
+                            <div className="font-medium">{q.title} <span className="text-amber-600 text-xs font-semibold ml-2">+{q.xp} XP</span></div>
+                            <div className="text-sm text-slate-600">{q.detail}</div>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                    <div className="mt-3 flex items-center gap-2">
+                      <button onClick={exportPlan} className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 flex items-center gap-1">
+                        <Download className="w-4 h-4"/> Export Plan (JSON)
+                      </button>
+                    </div>
+                  </section>
+                )}
+              </div>
+
+              <aside className="md:col-span-4 space-y-6">
+                <div className="p-4 rounded-2xl shadow-sm border bg-gradient-to-tr from-indigo-50 to-white">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Flame className="w-5 h-5 text-indigo-600"/>
+                    <h3 className="font-semibold">Step Controls</h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button className={"px-3 py-1.5 rounded-lg border text-sm " + (step===1 ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50")} onClick={()=> setStep(s=> Math.max(1, s-1))}>Back</button>
+                    <button className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700" onClick={()=> setStep(s=> Math.min(4, s+1))}>
+                      {step < 4 ? "Next" : "Review"}
+                    </button>
+                  </div>
+                  <p className="text-xs text-slate-600 mt-3">Tip: You can adjust anything and the suggestions will update instantly.</p>
+                </div>
+
+                <div className="p-4 rounded-2xl shadow-sm border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Brain className="w-5 h-5 text-emerald-600"/>
+                    <h3 className="font-semibold">How Scoring Works</h3>
+                  </div>
+                  <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
+                    <li><span className="font-medium">Interests</span> (55%): More overlapping tags → higher score.</li>
+                    <li><span className="font-medium">Capabilities</span> (35%): Gaps between required vs. your ratings reduce the score.</li>
+                    <li><span className="font-medium">Constraints</span> (10%): Time/travel/ethics penalties if misaligned.</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 rounded-2xl shadow-sm border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="w-5 h-5 text-amber-600"/>
+                    <h3 className="font-semibold">Educator Notes</h3>
+                  </div>
+                  <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
+                    <li>Edit the <code>TOPICS</code> array to match your program or discipline.</li>
+                    <li>Use <code>buildQuestPlan()</code> to align with assessment milestones.</li>
+                    <li>Adjust difficulty via <code>timeDemand</code> and required <code>skills</code>.</li>
+                    <li>Exported JSON can be submitted with a proposal template or fed into a dashboard later.</li>
+                  </ul>
+                </div>
+              </aside>
+            </div>
+          </main>
+
+          <footer className="max-w-5xl mx-auto px-4 pb-10 pt-4 text-xs text-slate-500">
+            Built for East Asian Studies in Malaysia. Please follow your institution's research ethics and data privacy requirements.
+          </footer>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App/>);
+  </script>
+</body>
+</html>
