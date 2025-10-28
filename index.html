@@ -8,17 +8,46 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html, body { height: 100%; }
+    #error-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85);
+      color: #fff; z-index: 9999; padding: 16px; overflow: auto; display: none;
+    }
+    #error-overlay pre { white-space: pre-wrap; word-break: break-word; }
   </style>
 </head>
 <body class="bg-slate-50">
-  <div id="root"></div>
+  <div id="root"><div class="max-w-3xl mx-auto p-4 text-slate-700">Booting app…</div></div>
+  <div id="error-overlay">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-xl font-semibold mb-2">Runtime error</h2>
+      <p class="mb-3">If you are on GitHub Pages, try hard refresh (Ctrl/Cmd+Shift+R). See details below:</p>
+      <pre id="error-log" class="bg-slate-900/60 p-3 rounded-lg"></pre>
+    </div>
+  </div>
 
-  <!-- React + ReactDOM + Babel (for in-browser JSX transpile) -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Pin exact versions and load them BEFORE the text/babel script -->
+  <script defer src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script defer src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script defer src="https://unpkg.com/@babel/standalone@7.25.7/babel.min.js"></script>
 
-  <script type="text/babel">
+  <script>
+    // Error overlay helpers
+    (function () {
+      const overlay = document.getElementById('error-overlay');
+      const log = document.getElementById('error-log');
+      function showError(e) {
+        overlay.style.display = 'block';
+        log.textContent = (e && e.stack) ? e.stack : String(e);
+        console.error(e);
+      }
+      window.addEventListener('error', (ev) => showError(ev.error || ev.message));
+      window.addEventListener('unhandledrejection', (ev) => showError(ev.reason || ev));
+      window.__showError = showError;
+    })();
+  </script>
+
+  <!-- Your app (transpiled in-browser). Make sure this tag comes AFTER the three scripts above. -->
+  <script type="text/babel" data-presets="env,react">
     const { useState, useMemo, useEffect } = React;
 
     // Minimal inline SVG icons (no external deps)
@@ -57,7 +86,7 @@
       "Language Education & Pedagogy",
       "Translation & Interpreting",
       "Writing Systems & Literacy",
-      "History (Pre‑modern)",
+      "History (Pre-modern)",
       "History (Modern & Contemporary)",
       "Colonialism & Postcoloniality",
       "Memory, Heritage & Museums",
@@ -91,7 +120,7 @@
       "Methods: Quantitative/Statistics",
       "Methods: Digital Humanities & GIS/Mapping",
       "Methods: Computational Social Science",
-      "Comparative & Cross‑Cultural Studies"
+      "Comparative & Cross-Cultural Studies"
     ];
 
     const SKILLS = [
@@ -106,7 +135,6 @@
       { key: "dh", label: "Digital Humanities/Mapping" }
     ];
 
-    // NEW: Topics are now loaded from topics.json
     function useTopics() {
       const [topics, setTopics] = useState([]);
       const [loading, setLoading] = useState(true);
@@ -114,21 +142,19 @@
 
       useEffect(() => {
         let cancelled = false;
-        async function run() {
-          setLoading(true);
+        (async () => {
           try {
             const res = await fetch("topics.json", { cache: "no-store" });
-            if (!res.ok) throw new Error(\`Failed to load topics.json (\${res.status})\`);
+            if (!res.ok) throw new Error(`Failed to load topics.json (${res.status})`);
             const data = await res.json();
             if (!Array.isArray(data)) throw new Error("topics.json must be a JSON array");
             if (!cancelled) setTopics(data);
-          } catch (err) {
-            if (!cancelled) setError(err.message || String(err));
+          } catch (e) {
+            if (!cancelled) setError(e.message || String(e));
           } finally {
             if (!cancelled) setLoading(false);
           }
-        }
-        run();
+        })();
         return () => { cancelled = true; };
       }, []);
 
@@ -140,22 +166,20 @@
     function calcFit(topic, profile) {
       const WEIGHTS = { interests: 0.55, capability: 0.35, constraints: 0.10 };
 
-      const overlap = topic.tags.filter(t => profile.interests.includes(t)).length;
-      const interestScore = topic.tags.length ? (overlap / topic.tags.length) * 100 : 0;
+      const overlap = (topic.tags || []).filter(t => profile.interests.includes(t)).length;
+      const interestScore = (topic.tags && topic.tags.length) ? (overlap / topic.tags.length) * 100 : 0;
 
-      const gapSum = [
-        ...SKILLS.map(s => s.key)
-      ].reduce((sum, key) => {
-        const req = topic.skills[key] || 0;
+      const gapSum = SKILLS.map(s => s.key).reduce((sum, key) => {
+        const req = (topic.skills && Number.isFinite(topic.skills[key])) ? topic.skills[key] : 0;
         const me = profile.skills[key] || 0;
         return sum + Math.max(0, req - me);
       }, 0);
       const capabilityScore = clamp(100 - gapSum * 15, 0, 100);
 
       let penalty = 0;
-      if (topic.needs.travel && profile.travel < 3) penalty += 30;
-      if (topic.needs.ethics && !profile.ethicsReady) penalty += 20;
-      if (profile.timePerWeek < topic.timeDemand * 3) penalty += 20;
+      if (topic.needs && topic.needs.travel && profile.travel < 3) penalty += 30;
+      if (topic.needs && topic.needs.ethics && !profile.ethicsReady) penalty += 20;
+      if (profile.timePerWeek < (Number.isFinite(topic.timeDemand) ? topic.timeDemand : 3) * 3) penalty += 20;
       const constraintsScore = clamp(100 - penalty, 0, 100);
 
       const finalScore = clamp(
@@ -171,9 +195,9 @@
     function useBadges(progress, bestScore) {
       const badges = [];
       if (progress >= 25) badges.push({ id: "b1", name: "Curious Mind", desc: "Selected interests" });
-      if (progress >= 50) badges.push({ id: "b2", name: "Self‑Aware Scholar", desc: "Rated your skills" });
+      if (progress >= 50) badges.push({ id: "b2", name: "Self-Aware Scholar", desc: "Rated your skills" });
       if (progress >= 75) badges.push({ id: "b3", name: "Strategist", desc: "Set constraints" });
-      if (bestScore >= 80) badges.push({ id: "b4", name: "Strong Fit", desc: "High‑match topic" });
+      if (bestScore >= 80) badges.push({ id: "b4", name: "Strong Fit", desc: "High-match topic" });
       return badges;
     }
 
@@ -181,7 +205,7 @@
       if (!topic) return [];
       return [
         { id: "q1", title: "Sharpen Your Question", detail: "Rewrite the topic as a precise RQ (what, who, where, when).", xp: 50 },
-        { id: "q2", title: "Mini‑Literature Sprint", detail: "Collect 8–10 credible sources; summarize each in 2–3 sentences.", xp: 80 },
+        { id: "q2", title: "Mini-Literature Sprint", detail: "Collect 8–10 credible sources; summarize each in 2–3 sentences.", xp: 80 },
         { id: "q3", title: "Method Match", detail: "Choose methods that fit your question (interview, survey, observation, experiment).", xp: 80 },
         { id: "q4", title: "Ethics & Access", detail: "List data privacy, consent, and logistics; draft consent form if needed.", xp: 60 },
         { id: "q5", title: "Timeline & Risk Map", detail: "Plan weekly milestones; identify 3 risks and mitigations.", xp: 80 }
@@ -198,7 +222,6 @@
       const [xp, setXp] = useState(0);
       const [chosen, setChosen] = useState(null);
 
-      // Load topics.json
       const { topics, loading: loadingTopics, error: topicsError } = useTopics();
 
       const profile = { interests: selectedInterests, skills, timePerWeek, travel, ethicsReady };
@@ -373,7 +396,7 @@
                                 <h3 className="font-semibold">{idx+1}. {item.topic.title}</h3>
                                 <p className="text-sm text-slate-600 mt-1">{item.topic.description}</p>
                                 <div className="flex flex-wrap gap-2 mt-2">
-                                  {item.topic.tags.map(t => (
+                                  {(item.topic.tags || []).map(t => (
                                     <span key={t} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs">{t}</span>
                                   ))}
                                 </div>
@@ -402,7 +425,7 @@
                             <div className="mt-3 flex items-center gap-2">
                               <button
                                 className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
-                                onClick={() => setChosen({ topic: item.topic, reason: \`High match with your interests (\${item.topic.tags.filter(t=>selectedInterests.includes(t)).join(', ') || 'your selected interests'}) and current skills.\` })}
+                                onClick={() => setChosen({ topic: item.topic, reason: `High match with your interests (${(item.topic.tags || []).filter(t=>selectedInterests.includes(t)).join(', ') || 'your selected interests'}) and current skills.` })}
                               >
                                 Accept Quest
                               </button>
@@ -419,7 +442,7 @@
                     <h2 className="text-lg font-semibold mb-1">Your Quest Plan</h2>
                     <p className="text-sm text-slate-600 mb-3">Locked topic: <span className="font-semibold">{chosen.topic.title}</span>. Reason: {chosen.reason}</p>
                     <ol className="space-y-2">
-                      {questPlan.map(q => (
+                      {buildQuestPlan(chosen?.topic).map(q => (
                         <li key={q.id} className="p-3 rounded-lg border flex items-start gap-3">
                           <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5"/>
                           <div>
@@ -471,10 +494,9 @@
                     <h3 className="font-semibold">Educator Notes</h3>
                   </div>
                   <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
-                    <li>Put <code>topics.json</code> in the same folder as this <code>index.html</code>.</li>
-                    <li>Serve locally using a simple static server (e.g., <code>python -m http.server</code>) to avoid browser CORS restrictions on <code>file://</code>.</li>
-                    <li>Edit the dataset without touching the app logic.</li>
-                    <li>Exported JSON can be submitted with a proposal template or fed into a dashboard later.</li>
+                    <li>Keep <code>topics.json</code> next to <code>index.html</code> (same folder).</li>
+                    <li>On GitHub Pages, hard-refresh after updates (Ctrl/Cmd+Shift+R) due to CDN caching.</li>
+                    <li>If the page is blank, open DevTools → Console for errors. This build will also show them on-screen.</li>
                   </ul>
                 </div>
               </aside>
@@ -488,8 +510,21 @@
       );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App/>);
+    (function boot() {
+      try {
+        const rootEl = document.getElementById("root");
+        if (!rootEl) throw new Error("Root element #root not found");
+        if (ReactDOM && ReactDOM.createRoot) {
+          ReactDOM.createRoot(rootEl).render(<App/>);
+        } else if (ReactDOM && ReactDOM.render) {
+          ReactDOM.render(<App/>, rootEl);
+        } else {
+          throw new Error("ReactDOM not available");
+        }
+      } catch (e) {
+        window.__showError && window.__showError(e);
+      }
+    })();
   </script>
 </body>
 </html>
