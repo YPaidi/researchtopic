@@ -25,10 +25,26 @@
     </div>
   </div>
 
-  <!-- Pin exact versions and load them BEFORE the text/babel script -->
-  <script defer src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
-  <script defer src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-  <script defer src="https://unpkg.com/@babel/standalone@7.25.7/babel.min.js"></script>
+  <!-- Robust loader with CDN fallback (unpkg → jsDelivr) and CORS enabled -->
+<script>
+  (function loadCDNs(){
+    const head = document.head || document.getElementsByTagName('head')[0];
+    function add(src){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement('script');
+        s.src = src; s.async = false; s.crossOrigin = 'anonymous';
+        s.onload = resolve; s.onerror = ()=> reject(new Error('Failed to load '+src));
+        head.appendChild(s);
+      });
+    }
+    const primary = 'https://unpkg.com';
+    const fallback = 'https://cdn.jsdelivr.net/npm';
+    async function loadChain(base){
+      await add(base + '/react@18.2.0/umd/react.production.min.js');
+      await add(base + '/react-dom@18.2.0/umd/react-dom.production.min.js');
+      await add(base + '/@babel/standalone@7.25.7/babel.min.js');
+    }
+    (async()=>{
 
   <script>
     // Error overlay helpers
@@ -405,3 +421,92 @@
                                 <div>{Math.round(item.score.interestScore)} / 100</div>
                               </div>
                               <div className="p-2 rounded-lg bg-emerald-50">
+                                <div className="font-semibold">Capabilities</div>
+                                <div>{Math.round(item.score.capabilityScore)} / 100</div>
+                              </div>
+                              <div className="p-2 rounded-lg bg-amber-50">
+                                <div className="font-semibold">Constraints</div>
+                                <div>{Math.round(item.score.constraintsScore)} / 100</div>
+                              </div>
+                            </div>
+
+                            {/* NEW: one-sentence suitability */}
+                            <p className="mt-3 text-sm italic text-slate-700">{suitabilityLine(item.score)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                )}
+              </div>
+
+              <aside className="md:col-span-4 space-y-6">
+                <div className="p-4 rounded-2xl shadow-sm border bg-gradient-to-tr from-indigo-50 to-white">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Flame className="w-5 h-5 text-indigo-600"/>
+                    <h3 className="font-semibold">Step Controls</h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button className={"px-3 py-1.5 rounded-lg border text-sm " + (step===1 ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50")} onClick={()=> setStep(s=> Math.max(1, s-1))}>Back</button>
+                    {/* Removed Review button: hide Next on final step */}
+                    {step < 4 && (
+                      <button className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700" onClick={()=> setStep(s=> Math.min(4, s+1))}>
+                        Next
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-600 mt-3">Tip: You can adjust anything and the suggestions will update instantly.</p>
+                </div>
+
+                <div className="p-4 rounded-2xl shadow-sm border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Brain className="w-5 h-5 text-emerald-600"/>
+                    <h3 className="font-semibold">How Scoring Works</h3>
+                  </div>
+                  <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
+                    <li><span className="font-medium">Interests</span> (55%): More overlapping tags → higher score.</li>
+                    <li><span className="font-medium">Capabilities</span> (35%): Gaps between required vs. your ratings reduce the score.</li>
+                    <li><span className="font-medium">Constraints</span> (10%): Time/travel/ethics penalties if misaligned.</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 rounded-2xl shadow-sm border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="w-5 h-5 text-amber-600"/>
+                    <h3 className="font-semibold">Educator Notes</h3>
+                  </div>
+                  <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
+                    <li>Keep <code>topics.json</code> next to <code>index.html</code> (same folder).</li>
+                    <li>On GitHub Pages, hard-refresh after updates (Ctrl/Cmd+Shift+R) due to CDN caching.</li>
+                    <li>If the page is blank, open DevTools → Console for errors. This build will also show them on-screen.</li>
+                  </ul>
+                </div>
+              </aside>
+            </div>
+          </main>
+
+          <footer className="max-w-5xl mx-auto px-4 pb-10 pt-4 text-xs text-slate-500">
+            Built for East Asian Studies in Malaysia. Please follow your institution's research ethics and data privacy requirements.
+          </footer>
+        </div>
+      );
+    }
+
+    (function boot() {
+      try {
+        const rootEl = document.getElementById("root");
+        if (!rootEl) throw new Error("Root element #root not found");
+        if (ReactDOM && ReactDOM.createRoot) {
+          ReactDOM.createRoot(rootEl).render(<App/>);
+        } else if (ReactDOM && ReactDOM.render) {
+          ReactDOM.render(<App/>, rootEl);
+        } else {
+          throw new Error("ReactDOM not available");
+        }
+      } catch (e) {
+        window.__showError && window.__showError(e);
+      }
+    })();
+  </script>
+</body>
+</html>
