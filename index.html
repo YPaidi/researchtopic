@@ -106,38 +106,34 @@
       { key: "dh", label: "Digital Humanities/Mapping" }
     ];
 
-    const TOPICS = [
-      {"id":"ea1","title":"Japanese Companies in Malaysia: CSR & Community Engagement","tags":["Japanese Studies (Malaysia)","Business & Economy","Law & Policy"],"description":"Case studies of CSR by Japanese‑affiliated firms in Malaysia; document analysis plus brief stakeholder interviews.","skills":{"literature":3,"qualitative":3,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":3,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
-      {"id":"ea2","title":"K‑pop Fan Labor, Identity, and Community in Kuala Lumpur","tags":["Korean Studies (Malaysia)","Pop Culture & Media","Gender & Family"],"description":"Explore how K‑pop fans coordinate events, translations, and fundraising; interviews + small survey.","skills":{"literature":3,"qualitative":4,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":1,"dh":1},"needs":{"travel":false,"ethics":true},"timeDemand":3},
-      {"id":"ea3","title":"Chinese‑Medium Education and Language Maintenance","tags":["Chinese Studies (Malaysia)","Language & Education","History & Heritage"],"description":"Investigate how Chinese‑medium schooling shapes language maintenance and identity; school policy docs + interviews.","skills":{"literature":4,"qualitative":3,"quantitative":2,"coding":1,"fieldwork":2,"writing":3,"language":2,"archival":2,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
-      {"id":"ea4","title":"Dual‑Coding Aids for Beginner Kanji in Malaysian Classrooms","tags":["Japanese Studies (Malaysia)","Language & Education","Digital Humanities & Mapping"],"description":"Design pictorial + audio aids for 20 beginner kanji and test recall over two weeks (pre/post).","skills":{"literature":3,"qualitative":1,"quantitative":3,"coding":2,"fieldwork":1,"writing":3,"language":2,"archival":0,"dh":2},"needs":{"travel":false,"ethics":true},"timeDemand":3},
-      {"id":"ea5","title":"Motivations for Korean Language Study at Malaysian Universities","tags":["Korean Studies (Malaysia)","Language & Education"],"description":"Survey + interviews on why students choose Korean language; link to employability and pop‑culture exposure.","skills":{"literature":3,"qualitative":3,"quantitative":2,"coding":1,"fieldwork":1,"writing":3,"language":1,"archival":0,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":2},
-      {"id":"ea6","title":"Anime/Manga Influence on Malaysian Creative Industries","tags":["Japanese Studies (Malaysia)","Pop Culture & Media","Business & Economy"],"description":"Analyze how anime/manga aesthetics inform local design, comics, and merchandising; content + interviews.","skills":{"literature":2,"qualitative":2,"quantitative":2,"coding":2,"fieldwork":1,"writing":3,"language":1,"archival":1,"dh":1},"needs":{"travel":false,"ethics":true},"timeDemand":2},
-      {"id":"ea7","title":"East Asian Foodways and Diaspora Identity in Penang","tags":["Chinese Studies (Malaysia)","Japanese Studies (Malaysia)","Korean Studies (Malaysia)","Diaspora & Migration","History & Heritage"],"description":"Field observations and micro‑interviews in selected neighborhoods to map food, memory, and identity.","skills":{"literature":3,"qualitative":3,"quantitative":1,"coding":1,"fieldwork":3,"writing":3,"language":1,"archival":2,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
-      {"id":"ea8","title":"Belt and Road in Malaysian Media: Framing & Public Opinion","tags":["Chinese Studies (Malaysia)","Law & Policy","Pop Culture & Media"],"description":"Content analysis of local news and social posts on BRI; identify frames and sentiment over time.","skills":{"literature":3,"qualitative":2,"quantitative":3,"coding":2,"fieldwork":0,"writing":3,"language":2,"archival":1,"dh":1},"needs":{"travel":false,"ethics":false},"timeDemand":3},
-      {"id":"ea9","title":"K‑Beauty Adoption in Malaysia: Consumers and Influencers","tags":["Korean Studies (Malaysia)","Business & Economy","Pop Culture & Media"],"description":"Short survey + influencer post analysis to examine purchase intentions and brand trust.","skills":{"literature":2,"qualitative":2,"quantitative":3,"coding":2,"fieldwork":0,"writing":3,"language":0,"archival":0,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":2},
-      {"id":"ea10","title":"Bon Odori in Malaysia: Policy, Religion, and Public Discourse","tags":["Japanese Studies (Malaysia)","Law & Policy","History & Heritage"],"description":"Document controversy timelines, analyze statements, and conduct interviews with organizers/attendees.","skills":{"literature":3,"qualitative":3,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":2,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":3},
-      {"id":"ea11","title":"Mapping Japanese‑Affiliated Firms in Malaysia","tags":["Japanese Studies (Malaysia)","Business & Economy","Digital Humanities & Mapping"],"description":"Clean and geocode company data; build an interactive map to explore spatial/sectoral patterns.","skills":{"literature":2,"qualitative":1,"quantitative":3,"coding":3,"fieldwork":0,"writing":3,"language":1,"archival":1,"dh":4},"needs":{"travel":false,"ethics":false},"timeDemand":3},
-      {"id":"ea12","title":"Workplace Culture in East Asian‑Owned Firms in Malaysia","tags":["Chinese Studies (Malaysia)","Japanese Studies (Malaysia)","Korean Studies (Malaysia)","Business & Economy"],"description":"Interviews with employees to compare communication, hierarchy, and work expectations across firms.","skills":{"literature":3,"qualitative":4,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":0,"dh":0},"needs":{"travel":true,"ethics":true},"timeDemand":4},
-      {"id":"ea13","title":"Social Media Sentiment on China/Japan/Korea in Malaysia","tags":["Digital Humanities & Mapping","Technology & Society","Pop Culture & Media"],"description":"Collect public posts (APIs/exports), run basic sentiment classification, and compare topic trends.","skills":{"literature":2,"qualitative":1,"quantitative":3,"coding":3,"fieldwork":0,"writing":3,"language":1,"archival":0,"dh":3},"needs":{"travel":false,"ethics":false},"timeDemand":3},
-      {"id":"ea14","title":"Heritage Trails: East Asian Sites in Kuala Lumpur","tags":["History & Heritage","Digital Humanities & Mapping","Chinese Studies (Malaysia)","Japanese Studies (Malaysia)","Korean Studies (Malaysia)"],"description":"Create a digital heritage trail (map/story map) linking sites, oral histories, and archival images.","skills":{"literature":3,"qualitative":2,"quantitative":1,"coding":2,"fieldwork":3,"writing":3,"language":1,"archival":3,"dh":3},"needs":{"travel":true,"ethics":false},"timeDemand":4},
-      {"id":"ea15","title":"Chinese Tech Platforms and Malaysian SMEs: Cross‑Border E‑Commerce","tags":["Chinese Studies (Malaysia)","Business & Economy","Technology & Society"],"description":"How Malaysian SMEs use China‑linked platforms (e‑commerce, payments, logistics); interviews + small analytics.","skills":{"literature":3,"qualitative":3,"quantitative":2,"coding":2,"fieldwork":1,"writing":3,"language":1,"archival":1,"dh":1},"needs":{"travel":false,"ethics":true},"timeDemand":3},
-      {"id":"ea16","title":"Internships in Japanese Firms: Work Culture Socialization in Malaysia","tags":["Japanese Studies (Malaysia)","Business & Economy","Culture & Everyday Life"],"description":"Student experiences of hierarchy, teamwork, and communication in Japanese‑affiliated workplaces; qualitative study.","skills":{"literature":3,"qualitative":4,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":0,"dh":0},"needs":{"travel":true,"ethics":true},"timeDemand":3},
-      {"id":"ea17","title":"Korean Food Franchises in Klang Valley: Localization Strategies","tags":["Korean Studies (Malaysia)","Business & Economy","Culture & Everyday Life"],"description":"Menu, branding, and service adaptations in K‑food chains; content analysis + manager interviews.","skills":{"literature":2,"qualitative":3,"quantitative":1,"coding":1,"fieldwork":2,"writing":3,"language":0,"archival":0,"dh":0},"needs":{"travel":true,"ethics":true},"timeDemand":3},
-      {"id":"ea18","title":"Language Policy for East Asian Languages in Malaysian Universities","tags":["Language Policy & Planning","Language & Education","Malaysia–East Asia Relations"],"description":"Document analysis of elective offerings (CN/JP/KR), staffing, and policy rationales; admin interviews.","skills":{"literature":4,"qualitative":2,"quantitative":1,"coding":1,"fieldwork":1,"writing":3,"language":1,"archival":3,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":2},
-      {"id":"ea19","title":"Anime Conventions and Soft Power in Malaysia","tags":["Japanese Studies (Malaysia)","Pop Culture & Media","Diplomacy, Soft Power & Cultural Exchange"],"description":"Event ethnography + survey to measure cultural attachment and perceived Japan image among attendees.","skills":{"literature":3,"qualitative":3,"quantitative":2,"coding":1,"fieldwork":3,"writing":3,"language":0,"archival":0,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
-      {"id":"ea20","title":"Traditional Chinese Medicine in Malaysia: Practice and Regulation","tags":["Chinese Studies (Malaysia)","Health, Healthcare & Public Health","Law & Policy"],"description":"Map TCM clinics, analyze regulatory documents, and interview practitioners on integration with public health.","skills":{"literature":4,"qualitative":3,"quantitative":1,"coding":2,"fieldwork":2,"writing":3,"language":1,"archival":3,"dh":2},"needs":{"travel":true,"ethics":true},"timeDemand":4},
-      {"id":"ea21","title":"Framing East Asia in Malaysian Newsrooms","tags":["Media, Journalism & Public Opinion","International Relations & Security","East Asia (Comparative/Regional)"],"description":"Content + discourse analysis of Malaysia‑based media coverage of China/Japan/Korea over the last year.","skills":{"literature":3,"qualitative":2,"quantitative":2,"coding":2,"fieldwork":0,"writing":3,"language":0,"archival":2,"dh":1},"needs":{"travel":false,"ethics":false},"timeDemand":3},
-      {"id":"ea22","title":"Short‑Video Content Flows from East Asia and Malaysian Youth","tags":["Digital Culture & Platforms","Pop Culture & Media","Youth, Education & Student Life"],"description":"Track content genres and engagement from CN/JP/KR origin accounts; diary study + platform metadata sampling.","skills":{"literature":2,"qualitative":2,"quantitative":3,"coding":3,"fieldwork":1,"writing":3,"language":0,"archival":0,"dh":2},"needs":{"travel":false,"ethics":true},"timeDemand":3},
-      {"id":"ea23","title":"Translanguaging in K‑pop Fan Subbing Communities (Malaysia)","tags":["Sociolinguistics","Pop Culture & Media","Korean Studies (Malaysia)"],"description":"Analyze fan translations and comment threads for code‑switching and stance; corpus + interviews.","skills":{"literature":3,"qualitative":3,"quantitative":1,"coding":2,"fieldwork":1,"writing":3,"language":2,"archival":1,"dh":2},"needs":{"travel":false,"ethics":true},"timeDemand":3},
-      {"id":"ea24","title":"Family Memories of the Japanese Occupation","tags":["History (Modern & Contemporary)","Memory, Heritage & Museums","Japanese Studies (Malaysia)"],"description":"Oral histories and photo/letter archives to document intergenerational memory and local narratives.","skills":{"literature":3,"qualitative":4,"quantitative":0,"coding":1,"fieldwork":2,"writing":3,"language":1,"archival":4,"dh":1},"needs":{"travel":true,"ethics":true},"timeDemand":4},
-      {"id":"ea25","title":"Malaysia and North Korea: A Documentary Timeline (2000–2020)","tags":["Korea (ROK & DPRK)","International Relations & Security","Law & Policy"],"description":"Compile statements, sanctions, and diplomatic incidents; analyze shifts in policy narratives.","skills":{"literature":3,"qualitative":2,"quantitative":0,"coding":1,"fieldwork":0,"writing":3,"language":0,"archival":4,"dh":1},"needs":{"travel":false,"ethics":false},"timeDemand":2},
-      {"id":"ea26","title":"Chinese FDI and Supply Chains: The Case of MCKIP","tags":["Chinese Studies (Malaysia)","Trade, FDI & Supply Chains","Economy & Development"],"description":"Policy docs + firm reports to assess investment drivers, employment, and local linkages; basic input–output view.","skills":{"literature":4,"qualitative":2,"quantitative":2,"coding":2,"fieldwork":1,"writing":3,"language":1,"archival":2,"dh":1},"needs":{"travel":true,"ethics":false},"timeDemand":4},
-      {"id":"ea27","title":"Japanese Language Learning and Employability in Malaysia","tags":["Japanese Studies (Malaysia)","Language & Education","Business & Economy"],"description":"Survey employers and students on JLPT levels, internships, and hiring signals; link to job postings.","skills":{"literature":3,"qualitative":2,"quantitative":3,"coding":2,"fieldwork":1,"writing":3,"language":2,"archival":0,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":3},
-      {"id":"ea28","title":"ESG Reporting by East Asian Subsidiaries in Malaysia","tags":["Corporate Governance, CSR & ESG","Business & Economy","East Asia (Comparative/Regional)"],"description":"Compare ESG disclosures of CN/JP/KR subsidiaries; score themes and alignment with local regulations.","skills":{"literature":3,"qualitative":2,"quantitative":2,"coding":2,"fieldwork":0,"writing":3,"language":0,"archival":3,"dh":1},"needs":{"travel":false,"ethics":false},"timeDemand":3},
-      {"id":"ea29","title":"Privacy Attitudes among WeChat/LINE/Kakao Users in Malaysia","tags":["AI, Data Governance & Privacy","Technology & Society","East Asia (Comparative/Regional)"],"description":"Survey + vignettes to measure trust and data‑sharing norms across app ecosystems.","skills":{"literature":3,"qualitative":2,"quantitative":3,"coding":2,"fieldwork":0,"writing":3,"language":0,"archival":0,"dh":0},"needs":{"travel":false,"ethics":true},"timeDemand":2},
-      {"id":"ea30","title":"Anime Tourism and Domestic Travel in Malaysia","tags":["Tourism, Heritage Routes & Creative Industries","Pop Culture & Media","Japanese Studies (Malaysia)"],"description":"Link pop‑culture events to local travel intentions and spending; intercept surveys at events.","skills":{"literature":2,"qualitative":2,"quantitative":3,"coding":1,"fieldwork":2,"writing":3,"language":0,"archival":0,"dh":0},"needs":{"travel":true,"ethics":true},"timeDemand":3}
-    ];
+    // NEW: Topics are now loaded from topics.json
+    function useTopics() {
+      const [topics, setTopics] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+
+      useEffect(() => {
+        let cancelled = false;
+        async function run() {
+          setLoading(true);
+          try {
+            const res = await fetch("topics.json", { cache: "no-store" });
+            if (!res.ok) throw new Error(\`Failed to load topics.json (\${res.status})\`);
+            const data = await res.json();
+            if (!Array.isArray(data)) throw new Error("topics.json must be a JSON array");
+            if (!cancelled) setTopics(data);
+          } catch (err) {
+            if (!cancelled) setError(err.message || String(err));
+          } finally {
+            if (!cancelled) setLoading(false);
+          }
+        }
+        run();
+        return () => { cancelled = true; };
+      }, []);
+
+      return { topics, loading, error };
+    }
 
     function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 
@@ -202,6 +198,9 @@
       const [xp, setXp] = useState(0);
       const [chosen, setChosen] = useState(null);
 
+      // Load topics.json
+      const { topics, loading: loadingTopics, error: topicsError } = useTopics();
+
       const profile = { interests: selectedInterests, skills, timePerWeek, travel, ethicsReady };
 
       const progress = useMemo(() => {
@@ -214,11 +213,11 @@
       }, [selectedInterests, skills, timePerWeek, travel, step]);
 
       const scored = useMemo(() => {
-        return TOPICS.map(t => ({
+        return topics.map(t => ({
           topic: t,
           score: calcFit(t, profile)
         })).sort((a, b) => b.score.finalScore - a.score.finalScore);
-      }, [profile]);
+      }, [topics, profile]);
 
       const bestScore = scored[0]?.score.finalScore || 0;
       const badges = useBadges(progress, bestScore);
@@ -355,51 +354,63 @@
                     <h2 className="text-lg font-semibold mb-1">Step 4 — Your Suggested Topics</h2>
                     <p className="text-sm text-slate-600 mb-4">Top matches are shown first. Click “Accept Quest” to lock one in and get a starter plan.</p>
 
-                    <div className="space-y-4">
-                      {scored.slice(0, 8).map((item, idx) => (
-                        <div key={item.topic.id} className="p-4 rounded-xl border hover:shadow-sm transition bg-white">
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <h3 className="font-semibold">{idx+1}. {item.topic.title}</h3>
-                              <p className="text-sm text-slate-600 mt-1">{item.topic.description}</p>
-                              <div className="flex flex-wrap gap-2 mt-2">
-                                {item.topic.tags.map(t => (
-                                  <span key={t} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs">{t}</span>
-                                ))}
+                    {loadingTopics && (
+                      <div className="p-4 rounded-lg bg-slate-50 border text-sm text-slate-600">Loading topics…</div>
+                    )}
+
+                    {topicsError && (
+                      <div className="p-4 rounded-lg bg-rose-50 border border-rose-200 text-sm text-rose-700">
+                        Failed to load topics: {topicsError}. Make sure <code>topics.json</code> is in the same folder and you are serving over HTTP(s).
+                      </div>
+                    )}
+
+                    {!loadingTopics && !topicsError && (
+                      <div className="space-y-4">
+                        {scored.slice(0, 8).map((item, idx) => (
+                          <div key={item.topic.id} className="p-4 rounded-xl border hover:shadow-sm transition bg-white">
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <h3 className="font-semibold">{idx+1}. {item.topic.title}</h3>
+                                <p className="text-sm text-slate-600 mt-1">{item.topic.description}</p>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                  {item.topic.tags.map(t => (
+                                    <span key={t} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs">{t}</span>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-2xl font-bold text-indigo-700">{Math.round(item.score.finalScore)}</div>
+                                <div className="text-xs text-slate-500">Fit score</div>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-2xl font-bold text-indigo-700">{Math.round(item.score.finalScore)}</div>
-                              <div className="text-xs text-slate-500">Fit score</div>
-                            </div>
-                          </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-xs">
-                            <div className="p-2 rounded-lg bg-indigo-50">
-                              <div className="font-semibold">Interests</div>
-                              <div>{Math.round(item.score.interestScore)} / 100</div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-xs">
+                              <div className="p-2 rounded-lg bg-indigo-50">
+                                <div className="font-semibold">Interests</div>
+                                <div>{Math.round(item.score.interestScore)} / 100</div>
+                              </div>
+                              <div className="p-2 rounded-lg bg-emerald-50">
+                                <div className="font-semibold">Capabilities</div>
+                                <div>{Math.round(item.score.capabilityScore)} / 100</div>
+                              </div>
+                              <div className="p-2 rounded-lg bg-amber-50">
+                                <div className="font-semibold">Constraints</div>
+                                <div>{Math.round(item.score.constraintsScore)} / 100</div>
+                              </div>
                             </div>
-                            <div className="p-2 rounded-lg bg-emerald-50">
-                              <div className="font-semibold">Capabilities</div>
-                              <div>{Math.round(item.score.capabilityScore)} / 100</div>
-                            </div>
-                            <div className="p-2 rounded-lg bg-amber-50">
-                              <div className="font-semibold">Constraints</div>
-                              <div>{Math.round(item.score.constraintsScore)} / 100</div>
-                            </div>
-                          </div>
 
-                          <div className="mt-3 flex items-center gap-2">
-                            <button
-                              className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
-                              onClick={() => setChosen({ topic: item.topic, reason: `High match with your interests (${item.topic.tags.filter(t=>selectedInterests.includes(t)).join(', ')}) and current skills.` })}
-                            >
-                              Accept Quest
-                            </button>
+                            <div className="mt-3 flex items-center gap-2">
+                              <button
+                                className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
+                                onClick={() => setChosen({ topic: item.topic, reason: \`High match with your interests (\${item.topic.tags.filter(t=>selectedInterests.includes(t)).join(', ') || 'your selected interests'}) and current skills.\` })}
+                              >
+                                Accept Quest
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </section>
                 )}
 
@@ -460,9 +471,9 @@
                     <h3 className="font-semibold">Educator Notes</h3>
                   </div>
                   <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
-                    <li>Edit the <code>TOPICS</code> array to match your program or discipline.</li>
-                    <li>Use <code>buildQuestPlan()</code> to align with assessment milestones.</li>
-                    <li>Adjust difficulty via <code>timeDemand</code> and required <code>skills</code>.</li>
+                    <li>Put <code>topics.json</code> in the same folder as this <code>index.html</code>.</li>
+                    <li>Serve locally using a simple static server (e.g., <code>python -m http.server</code>) to avoid browser CORS restrictions on <code>file://</code>.</li>
+                    <li>Edit the dataset without touching the app logic.</li>
                     <li>Exported JSON can be submitted with a proposal template or fed into a dashboard later.</li>
                   </ul>
                 </div>
