@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html, body { height: 100%; }
+    /* On-page error overlay so blank pages show why */
     #error-overlay {
       position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85);
       color: #fff; z-index: 9999; padding: 16px; overflow: auto; display: none;
@@ -17,37 +18,22 @@
 </head>
 <body class="bg-slate-50">
   <div id="root"><div class="max-w-3xl mx-auto p-4 text-slate-700">Booting app…</div></div>
+
+  <!-- Error overlay (appears if runtime errors occur) -->
   <div id="error-overlay">
     <div class="max-w-3xl mx-auto">
       <h2 class="text-xl font-semibold mb-2">Runtime error</h2>
-      <p class="mb-3">If you are on GitHub Pages, try hard refresh (Ctrl/Cmd+Shift+R). See details below:</p>
       <pre id="error-log" class="bg-slate-900/60 p-3 rounded-lg"></pre>
     </div>
   </div>
 
-  <!-- Robust loader with CDN fallback (unpkg → jsDelivr) and CORS enabled -->
-<script>
-  (function loadCDNs(){
-    const head = document.head || document.getElementsByTagName('head')[0];
-    function add(src){
-      return new Promise((resolve, reject)=>{
-        const s = document.createElement('script');
-        s.src = src; s.async = false; s.crossOrigin = 'anonymous';
-        s.onload = resolve; s.onerror = ()=> reject(new Error('Failed to load '+src));
-        head.appendChild(s);
-      });
-    }
-    const primary = 'https://unpkg.com';
-    const fallback = 'https://cdn.jsdelivr.net/npm';
-    async function loadChain(base){
-      await add(base + '/react@18.2.0/umd/react.production.min.js');
-      await add(base + '/react-dom@18.2.0/umd/react-dom.production.min.js');
-      await add(base + '/@babel/standalone@7.25.7/babel.min.js');
-    }
-    (async()=>{
+  <!-- Pin versions and load before JSX -->
+  <script defer src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script defer src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script defer src="https://unpkg.com/@babel/standalone@7.25.7/babel.min.js"></script>
 
   <script>
-    // Error overlay helpers
+    // Show readable errors on the page (useful on GitHub Pages / file hosting)
     (function () {
       const overlay = document.getElementById('error-overlay');
       const log = document.getElementById('error-log');
@@ -66,7 +52,7 @@
   <script type="text/babel" data-presets="env,react">
     const { useState, useMemo, useEffect } = React;
 
-    // Minimal inline SVG icons (no external deps)
+    /* ---------- Icons (inline SVG; no external deps) ---------- */
     const Icon = ({ path, className }) => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
            strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -74,83 +60,50 @@
       </svg>
     );
     const Sparkles = (p) => <Icon {...p} path="M12 3l1.8 3.6L18 8.4l-3.6 1.8L12 14l-1.8-3.6L6 8.4l3.6-1.8L12 3z" />;
-    const CheckCircle2 = (p) => <Icon {...p} path="M12 22a10 10 0 100-20 10 10 0 000 20zm-2-7l-2-2m2 2l6-6" />;
     const Flame = (p) => <Icon {...p} path="M12 2s4 4 4 8a4 4 0 11-8 0c0-4 4-8 4-8z" />;
     const Brain = (p) => <Icon {...p} path="M8 6a4 4 0 000 8h1v-6H8zm7 0h-1v6h1a4 4 0 000-8z" />;
     const Target = (p) => <Icon {...p} path="M12 22a10 10 0 110-20 10 10 0 010 20zm0-6a4 4 0 100-8 4 4 0 000 8z" />;
     const Timer = (p) => <Icon {...p} path="M10 2h4M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />;
-    const Download = (p) => <Icon {...p} path="M12 3v10m0 0l-3-3m3 3l3-3M5 21h14" />;
     const MapPin = (p) => <Icon {...p} path="M12 21s7-4.35 7-10a7 7 0 10-14 0c0 5.65 7 10 7 10z" />;
 
+    /* ---------- Interests & skills ---------- */
     const INTERESTS = [
-      "Chinese Studies (Malaysia)",
-      "Japanese Studies (Malaysia)",
-      "Korean Studies (Malaysia)",
-      "East Asia (Comparative/Regional)",
-      "China",
-      "Japan",
-      "South Korea",
-      "North Korea",
-      "Overseas Chinese/Japanese/Korean Diasporas",
-      "Malaysia–East Asia Relations",
-      "Society & Social Change",
-      "Culture & Everyday Life",
-      "Popular Culture & Media",
-      "Digital Culture & Platforms",
-      "Language Policy & Planning",
-      "Sociolinguistics",
-      "Language Education & Pedagogy",
-      "Translation & Interpreting",
-      "Writing Systems & Literacy",
-      "History (Pre-modern)",
-      "History (Modern & Contemporary)",
-      "Colonialism & Postcoloniality",
-      "Memory, Heritage & Museums",
-      "Religion & Philosophy",
-      "Gender, Sexuality & Family",
-      "Youth, Education & Student Life",
-      "Demography, Migration & Diaspora",
-      "Urbanization, Housing & Infrastructure",
-      "Rural Studies & Agriculture",
-      "Economy & Development",
-      "Business, Management & Work Culture",
-      "Trade, FDI & Supply Chains",
-      "Entrepreneurship & SMEs",
-      "Corporate Governance, CSR & ESG",
-      "Law, Governance & Public Policy",
-      "Politics, Elections & Civil Society",
-      "International Relations & Security",
-      "Diplomacy, Soft Power & Cultural Exchange",
-      "Media, Journalism & Public Opinion",
-      "Technology, Innovation & Industry 4.0",
-      "AI, Data Governance & Privacy",
-      "Environment, Climate & Energy Transitions",
-      "Health, Healthcare & Public Health",
-      "Tourism, Heritage Routes & Creative Industries",
-      "Arts, Literature & Aesthetics",
-      "Foodways & Material Culture",
-      "Sport & Leisure Studies",
-      "Methods: Ethnography",
-      "Methods: Archival & Document Analysis",
-      "Methods: Survey",
-      "Methods: Quantitative/Statistics",
-      "Methods: Digital Humanities & GIS/Mapping",
-      "Methods: Computational Social Science",
-      "Comparative & Cross-Cultural Studies"
+      "Chinese Studies (Malaysia)","Japanese Studies (Malaysia)","Korean Studies (Malaysia)",
+      "East Asia (Comparative/Regional)","China","Japan","South Korea","North Korea",
+      "Overseas Chinese/Japanese/Korean Diasporas","Malaysia–East Asia Relations",
+      "Society & Social Change","Culture & Everyday Life","Popular Culture & Media",
+      "Digital Culture & Platforms","Language Policy & Planning","Sociolinguistics",
+      "Language Education & Pedagogy","Translation & Interpreting","Writing Systems & Literacy",
+      "History (Pre-modern)","History (Modern & Contemporary)","Colonialism & Postcoloniality",
+      "Memory, Heritage & Museums","Religion & Philosophy","Gender, Sexuality & Family",
+      "Youth, Education & Student Life","Demography, Migration & Diaspora",
+      "Urbanization, Housing & Infrastructure","Rural Studies & Agriculture","Economy & Development",
+      "Business, Management & Work Culture","Trade, FDI & Supply Chains","Entrepreneurship & SMEs",
+      "Corporate Governance, CSR & ESG","Law, Governance & Public Policy",
+      "Politics, Elections & Civil Society","International Relations & Security",
+      "Diplomacy, Soft Power & Cultural Exchange","Media, Journalism & Public Opinion",
+      "Technology, Innovation & Industry 4.0","AI, Data Governance & Privacy",
+      "Environment, Climate & Energy Transitions","Health, Healthcare & Public Health",
+      "Tourism, Heritage Routes & Creative Industries","Arts, Literature & Aesthetics",
+      "Foodways & Material Culture","Sport & Leisure Studies",
+      "Methods: Ethnography","Methods: Archival & Document Analysis","Methods: Survey",
+      "Methods: Quantitative/Statistics","Methods: Digital Humanities & GIS/Mapping",
+      "Methods: Computational Social Science","Comparative & Cross-Cultural Studies"
     ];
 
     const SKILLS = [
-      { key: "literature", label: "Literature Review" },
+      { key: "literature",  label: "Literature Review" },
       { key: "qualitative", label: "Qualitative Interviewing" },
-      { key: "quantitative", label: "Quantitative/Stats" },
-      { key: "coding", label: "Data/Code (Excel/R/Python)" },
-      { key: "fieldwork", label: "Fieldwork/Observation" },
-      { key: "writing", label: "Academic Writing" },
-      { key: "language", label: "Language Proficiency (CN/JP/KR)" },
-      { key: "archival", label: "Archival/Document Analysis" },
-      { key: "dh", label: "Digital Humanities/Mapping" }
+      { key: "quantitative",label: "Quantitative/Stats" },
+      { key: "coding",      label: "Data/Code (Excel/R/Python)" },
+      { key: "fieldwork",   label: "Fieldwork/Observation" },
+      { key: "writing",     label: "Academic Writing" },
+      { key: "language",    label: "Language Proficiency (CN/JP/KR)" },
+      { key: "archival",    label: "Archival/Document Analysis" },
+      { key: "dh",          label: "Digital Humanities/Mapping" }
     ];
 
+    /* ---------- Load topics.json ---------- */
     function useTopics() {
       const [topics, setTopics] = useState([]);
       const [loading, setLoading] = useState(true);
@@ -177,6 +130,7 @@
       return { topics, loading, error };
     }
 
+    /* ---------- Fit score ---------- */
     function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 
     function calcFit(topic, profile) {
@@ -187,14 +141,14 @@
 
       const gapSum = SKILLS.map(s => s.key).reduce((sum, key) => {
         const req = (topic.skills && Number.isFinite(topic.skills[key])) ? topic.skills[key] : 0;
-        const me = profile.skills[key] || 0;
+        const me  = profile.skills[key] || 0;
         return sum + Math.max(0, req - me);
       }, 0);
       const capabilityScore = clamp(100 - gapSum * 15, 0, 100);
 
       let penalty = 0;
       if (topic.needs && topic.needs.travel && profile.travel < 3) penalty += 30;
-      if (topic.needs && topic.needs.ethics && !profile.ethicsReady) penalty += 20;
+      if (topic.needs && topic.needs.ethics && !profile.ethicsReady)  penalty += 20;
       if (profile.timePerWeek < (Number.isFinite(topic.timeDemand) ? topic.timeDemand : 3) * 3) penalty += 20;
       const constraintsScore = clamp(100 - penalty, 0, 100);
 
@@ -204,43 +158,19 @@
         constraintsScore * WEIGHTS.constraints,
         0, 100
       );
-
       return { interestScore, capabilityScore, constraintsScore, finalScore };
     }
 
     function useBadges(progress, bestScore) {
       const badges = [];
-      if (progress >= 25) badges.push({ id: "b1", name: "Curious Mind", desc: "Selected interests" });
-      if (progress >= 50) badges.push({ id: "b2", name: "Self-Aware Scholar", desc: "Rated your skills" });
-      if (progress >= 75) badges.push({ id: "b3", name: "Strategist", desc: "Set constraints" });
-      if (bestScore >= 80) badges.push({ id: "b4", name: "Strong Fit", desc: "High-match topic" });
+      if (progress >= 25) badges.push({ id: "b1", name: "Curious Mind" });
+      if (progress >= 50) badges.push({ id: "b2", name: "Self-Aware Scholar" });
+      if (progress >= 75) badges.push({ id: "b3", name: "Strategist" });
+      if (bestScore >= 80) badges.push({ id: "b4", name: "Strong Fit" });
       return badges;
     }
 
-    // NEW: concise one-sentence suitability line
-    function suitabilityLine(score) {
-      const s = Math.round(score.finalScore);
-      const interestPart = score.interestScore >= 80
-        ? "matches your interests very well"
-        : score.interestScore >= 50
-          ? "partially matches your interests"
-          : "has limited overlap with your interests";
-
-      const skillPart = score.capabilityScore >= 80
-        ? "your current skills are well aligned"
-        : score.capabilityScore >= 50
-          ? "you may need to polish some key skills"
-          : "you will need significant upskilling";
-
-      const feasibilityPart = score.constraintsScore >= 80
-        ? "and it is feasible within your time and access"
-        : score.constraintsScore >= 50
-          ? "and it is likely feasible with careful planning"
-          : "and it will require more time or access to be feasible";
-
-      return `Overall fit ${s}/100 — this topic ${interestPart}; ${skillPart}, ${feasibilityPart}.`;
-    }
-
+    /* ---------- App ---------- */
     function App() {
       const [step, setStep] = useState(1);
       const [selectedInterests, setSelectedInterests] = useState([]);
@@ -251,7 +181,6 @@
       const [xp, setXp] = useState(0);
 
       const { topics, loading: loadingTopics, error: topicsError } = useTopics();
-
       const profile = { interests: selectedInterests, skills, timePerWeek, travel, ethicsReady };
 
       const progress = useMemo(() => {
@@ -264,10 +193,9 @@
       }, [selectedInterests, skills, timePerWeek, travel, step]);
 
       const scored = useMemo(() => {
-        return topics.map(t => ({
-          topic: t,
-          score: calcFit(t, profile)
-        })).sort((a, b) => b.score.finalScore - a.score.finalScore);
+        return topics
+          .map(t => ({ topic: t, score: calcFit(t, profile) }))
+          .sort((a, b) => b.score.finalScore - a.score.finalScore);
       }, [topics, profile]);
 
       const bestScore = scored[0]?.score.finalScore || 0;
@@ -278,7 +206,9 @@
       }, [progress, bestScore]);
 
       function toggleInterest(item) {
-        setSelectedInterests(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
+        setSelectedInterests(prev => prev.includes(item)
+          ? prev.filter(i => i !== item)
+          : [...prev, item]);
       }
 
       return (
@@ -313,6 +243,8 @@
 
             <div className="grid md:grid-cols-12 gap-6">
               <div className="md:col-span-8 space-y-6">
+
+                {/* Step 1 */}
                 {step === 1 && (
                   <section className="p-4 rounded-2xl shadow-sm border">
                     <h2 className="text-lg font-semibold mb-1">Step 1 — Choose Your Interests</h2>
@@ -331,6 +263,7 @@
                   </section>
                 )}
 
+                {/* Step 2 */}
                 {step === 2 && (
                   <section className="p-4 rounded-2xl shadow-sm border">
                     <h2 className="text-lg font-semibold mb-1">Step 2 — Rate Your Capabilities</h2>
@@ -354,6 +287,7 @@
                   </section>
                 )}
 
+                {/* Step 3 */}
                 {step === 3 && (
                   <section className="p-4 rounded-2xl shadow-sm border">
                     <h2 className="text-lg font-semibold mb-1">Step 3 — Set Your Constraints</h2>
@@ -380,10 +314,11 @@
                   </section>
                 )}
 
+                {/* Step 4 */}
                 {step >= 4 && (
                   <section className="p-4 rounded-2xl shadow-sm border">
                     <h2 className="text-lg font-semibold mb-1">Step 4 — Your Suggested Topics</h2>
-                    <p className="text-sm text-slate-600 mb-4">Top matches are shown first. Each suggestion includes a one‑sentence suitability note based on your scores.</p>
+                    <p className="text-sm text-slate-600 mb-4">Top matches are shown first.</p>
 
                     {loadingTopics && (
                       <div className="p-4 rounded-lg bg-slate-50 border text-sm text-slate-600">Loading topics…</div>
@@ -398,7 +333,7 @@
                     {!loadingTopics && !topicsError && (
                       <div className="space-y-4">
                         {scored.slice(0, 8).map((item, idx) => (
-                          <div key={item.topic.id} className="p-4 rounded-xl border hover:shadow-sm transition bg-white">
+                          <div key={item.topic.id || idx} className="p-4 rounded-xl border hover:shadow-sm transition bg-white">
                             <div className="flex items-start justify-between gap-3">
                               <div>
                                 <h3 className="font-semibold">{idx+1}. {item.topic.title}</h3>
@@ -429,9 +364,6 @@
                                 <div>{Math.round(item.score.constraintsScore)} / 100</div>
                               </div>
                             </div>
-
-                            {/* NEW: one-sentence suitability */}
-                            <p className="mt-3 text-sm italic text-slate-700">{suitabilityLine(item.score)}</p>
                           </div>
                         ))}
                       </div>
@@ -448,7 +380,6 @@
                   </div>
                   <div className="flex items-center gap-2">
                     <button className={"px-3 py-1.5 rounded-lg border text-sm " + (step===1 ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50")} onClick={()=> setStep(s=> Math.max(1, s-1))}>Back</button>
-                    {/* Removed Review button: hide Next on final step */}
                     {step < 4 && (
                       <button className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700" onClick={()=> setStep(s=> Math.min(4, s+1))}>
                         Next
@@ -477,8 +408,8 @@
                   </div>
                   <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
                     <li>Keep <code>topics.json</code> next to <code>index.html</code> (same folder).</li>
-                    <li>On GitHub Pages, hard-refresh after updates (Ctrl/Cmd+Shift+R) due to CDN caching.</li>
-                    <li>If the page is blank, open DevTools → Console for errors. This build will also show them on-screen.</li>
+                    <li>On GitHub Pages, hard-refresh after updates (Ctrl/Cmd+Shift+R) due to caching.</li>
+                    <li>If the page is blank, open DevTools → Console. This build also shows errors on-screen.</li>
                   </ul>
                 </div>
               </aside>
