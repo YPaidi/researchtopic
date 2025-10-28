@@ -48,7 +48,7 @@
     })();
   </script>
 
-  <!-- Your app (transpiled in-browser). Make sure this tag comes AFTER the three scripts above. -->
+  <!-- App (Babel in-browser). Keep this AFTER the three scripts above. -->
   <script type="text/babel" data-presets="env,react">
     const { useState, useMemo, useEffect } = React;
 
@@ -60,11 +60,11 @@
       </svg>
     );
     const Sparkles = (p) => <Icon {...p} path="M12 3l1.8 3.6L18 8.4l-3.6 1.8L12 14l-1.8-3.6L6 8.4l3.6-1.8L12 3z" />;
-    const Flame = (p) => <Icon {...p} path="M12 2s4 4 4 8a4 4 0 11-8 0c0-4 4-8 4-8z" />;
-    const Brain = (p) => <Icon {...p} path="M8 6a4 4 0 000 8h1v-6H8zm7 0h-1v6h1a4 4 0 000-8z" />;
-    const Target = (p) => <Icon {...p} path="M12 22a10 10 0 110-20 10 10 0 010 20zm0-6a4 4 0 100-8 4 4 0 000 8z" />;
-    const Timer = (p) => <Icon {...p} path="M10 2h4M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />;
-    const MapPin = (p) => <Icon {...p} path="M12 21s7-4.35 7-10a7 7 0 10-14 0c0 5.65 7 10 7 10z" />;
+    const Flame    = (p) => <Icon {...p} path="M12 2s4 4 4 8a4 4 0 11-8 0c0-4 4-8 4-8z" />;
+    const Brain    = (p) => <Icon {...p} path="M8 6a4 4 0 000 8h1v-6H8zm7 0h-1v6h1a4 4 0 000-8z" />;
+    const Target   = (p) => <Icon {...p} path="M12 22a10 10 0 110-20 10 10 0 010 20zm0-6a4 4 0 100-8 4 4 0 000 8z" />;
+    const Timer    = (p) => <Icon {...p} path="M10 2h4M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />;
+    const MapPin   = (p) => <Icon {...p} path="M12 21s7-4.35 7-10a7 7 0 10-14 0c0 5.65 7 10 7 10z" />;
 
     /* ---------- Interests & skills ---------- */
     const INTERESTS = [
@@ -161,6 +161,30 @@
       return { interestScore, capabilityScore, constraintsScore, finalScore };
     }
 
+    // NEW: concise one-sentence suitability line under each topic card
+    function suitabilityLine(score) {
+      const s = Math.round(score.finalScore);
+      const interestPart = score.interestScore >= 80
+        ? "matches your interests very well"
+        : score.interestScore >= 50
+        ? "partially matches your interests"
+        : "has limited overlap with your interests";
+
+      const skillPart = score.capabilityScore >= 80
+        ? "your current skills are well aligned"
+        : score.capabilityScore >= 50
+        ? "you may need to polish some key skills"
+        : "you will need significant upskilling";
+
+      const feasibilityPart = score.constraintsScore >= 80
+        ? "and it is feasible within your time and access"
+        : score.constraintsScore >= 50
+        ? "and it is likely feasible with careful planning"
+        : "and it will require more time or access to be feasible";
+
+      return `Overall fit ${s}/100 — this topic ${interestPart}; ${skillPart}, ${feasibilityPart}.`;
+    }
+
     function useBadges(progress, bestScore) {
       const badges = [];
       if (progress >= 25) badges.push({ id: "b1", name: "Curious Mind" });
@@ -170,33 +194,6 @@
       return badges;
     }
 
-// NEW: concise one-sentence suitability line
-    function suitabilityLine(score) {
-      const s = Math.round(score.finalScore);
-      const interestPart = score.interestScore >= 80
-      ? "matches your interests very well"
-      : score.interestScore >= 50
-      ? "partially matches your interests"
-      : "has limited overlap with your interests";
-
-
-      const skillPart = score.capabilityScore >= 80
-      ? "your current skills are well aligned"
-      : score.capabilityScore >= 50
-      ? "you may need to polish some key skills"
-      : "you will need significant upskilling";
-
-
-      const feasibilityPart = score.constraintsScore >= 80
-      ? "and it is feasible within your time and access"
-      : score.constraintsScore >= 50
-      ? "and it is likely feasible with careful planning"
-      : "and it will require more time or access to be feasible";
-
-
-      return `Overall fit ${s}/100 — this topic ${interestPart}; ${skillPart}, ${feasibilityPart}.`;
-    }
-    
     /* ---------- App ---------- */
     function App() {
       const [step, setStep] = useState(1);
@@ -390,6 +387,11 @@
                                 <div className="font-semibold">Constraints</div>
                                 <div>{Math.round(item.score.constraintsScore)} / 100</div>
                               </div>
+                            </div>
+
+                            <!-- Suitability line -->
+                            <div className="mt-3 p-3 rounded-md bg-slate-50 text-slate-700 text-sm border">
+                              {suitabilityLine(item.score)}
                             </div>
                           </div>
                         ))}
