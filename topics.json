@@ -2976,5 +2976,277 @@
       "ethics": true
     },
     "timeDemand": 3
+  },
+    {
+    "id": "ea115",
+    "title": "Shinto & Buddhist Associations: Malaysia–Japan Interactions",
+    "tags": ["Japanese Studies (Malaysia)", "Religion & Philosophy", "Malaysia–East Asia Relations"],
+    "description": "Map collaborations, visiting clergy, and festival participation; document analysis plus focused ethnography.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 1, "coding": 1, "fieldwork": 3, "writing": 3, "language": 2, "archival": 2, "dh": 1 },
+    "needs": { "travel": true, "ethics": true },
+    "timeDemand": 4
+  },
+  {
+    "id": "ea116",
+    "title": "J-pop Promotion Ecosystems in Malaysia",
+    "tags": ["Japanese Studies (Malaysia)", "Popular Culture & Media", "Business, Management & Work Culture"],
+    "description": "How labels, fanclubs, and local partners market J-pop; interviews with promoters and micro-survey of fans.",
+    "skills": { "literature": 2, "qualitative": 3, "quantitative": 2, "coding": 2, "fieldwork": 2, "writing": 3, "language": 1, "archival": 1, "dh": 1 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea117",
+    "title": "JLPT Prep Ecosystem & Outcomes in Malaysia",
+    "tags": ["Japanese Studies (Malaysia)", "Language Education & Pedagogy", "Economy & Development"],
+    "description": "Survey students/tutors and link preparation modes to JLPT results and internship or job signals.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 3, "coding": 2, "fieldwork": 1, "writing": 3, "language": 2, "archival": 0, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea118",
+    "title": "Tech Transfer in Japanese SMEs Operating in Malaysia",
+    "tags": ["Japanese Studies (Malaysia)", "Technology, Innovation & Industry 4.0", "Business, Management & Work Culture"],
+    "description": "Manager interviews and policy document review on upskilling, process innovation, and supplier development.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 2, "coding": 2, "fieldwork": 1, "writing": 3, "language": 1, "archival": 1, "dh": 1 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea119",
+    "title": "Manga Translation & Local Publishing Pipelines",
+    "tags": ["Japanese Studies (Malaysia)", "Translation & Interpreting", "Popular Culture & Media"],
+    "description": "Case studies of licensing, fan-to-pro pathways, and quality control in Malay/English manga releases.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 1, "coding": 1, "fieldwork": 1, "writing": 3, "language": 2, "archival": 1, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea120",
+    "title": "Sister-City Collaborations: Malaysia–Japan",
+    "tags": ["Diplomacy, Soft Power & Cultural Exchange", "Urbanization, Housing & Infrastructure", "Japan"],
+    "description": "Analyze MoUs and projects (culture, waste mgmt, SMEs); brief interviews with city officials.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 2, "coding": 1, "fieldwork": 1, "writing": 3, "language": 1, "archival": 2, "dh": 1 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 2
+  },
+  {
+    "id": "ea121",
+    "title": "Return Migration of Malaysian Graduates from Japan",
+    "tags": ["Malaysia–East Asia Relations", "Youth, Education & Student Life", "Japan"],
+    "description": "Survey/interviews on re-entry, career mobility, and professional networks after study in Japan.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 2, "coding": 2, "fieldwork": 1, "writing": 3, "language": 1, "archival": 1, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea122",
+    "title": "Japanese Green-Tech Pilots in Malaysian Cities",
+    "tags": ["Environment, Climate & Energy Transitions", "Technology, Innovation & Industry 4.0", "Japanese Studies (Malaysia)"],
+    "description": "Policy and project review (energy, waste, mobility) with outcome metrics where available.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 3, "coding": 2, "fieldwork": 1, "writing": 3, "language": 0, "archival": 1, "dh": 2 },
+    "needs": { "travel": false, "ethics": false },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea123",
+    "title": "War Memory of Japan in Malaysian School Textbooks",
+    "tags": ["History (Modern & Contemporary)", "Memory, Heritage & Museums", "Japanese Studies (Malaysia)"],
+    "description": "Textbook and curriculum analysis on occupation narratives and regional memory frames.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 1, "coding": 1, "fieldwork": 0, "writing": 3, "language": 1, "archival": 4, "dh": 1 },
+    "needs": { "travel": false, "ethics": false },
+    "timeDemand": 2
+  },
+  {
+    "id": "ea124",
+    "title": "Japanese Language Teacher Professional Development in Malaysia",
+    "tags": ["Language Education & Pedagogy", "Japanese Studies (Malaysia)", "Youth, Education & Student Life"],
+    "description": "Survey/workshop study on teacher training, materials use, and assessment practices.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 2, "coding": 1, "fieldwork": 1, "writing": 3, "language": 2, "archival": 1, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+
+  {
+    "id": "ea125",
+    "title": "Hallyu Policy (KOFICE) & Local Partners in Malaysia",
+    "tags": ["Korean Studies (Malaysia)", "Diplomacy, Soft Power & Cultural Exchange", "Popular Culture & Media"],
+    "description": "Map grants, events, and partner roles; interviews with organizers and policy brief analysis.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 1, "coding": 1, "fieldwork": 2, "writing": 3, "language": 1, "archival": 2, "dh": 1 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea126",
+    "title": "Korean Church Communities & Youth Practices in Malaysia",
+    "tags": ["Korean Studies (Malaysia)", "Religion & Philosophy", "Youth, Education & Student Life"],
+    "description": "Ethnography and interviews on language, volunteering, and transnational ties.",
+    "skills": { "literature": 3, "qualitative": 4, "quantitative": 1, "coding": 1, "fieldwork": 3, "writing": 3, "language": 1, "archival": 1, "dh": 0 },
+    "needs": { "travel": true, "ethics": true },
+    "timeDemand": 4
+  },
+  {
+    "id": "ea127",
+    "title": "Halal Certification & Korean Food Chains",
+    "tags": ["Korean Studies (Malaysia)", "Business, Management & Work Culture", "Law, Governance & Public Policy"],
+    "description": "Operational adaptations and regulatory navigation in K-food franchises.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 2, "coding": 1, "fieldwork": 2, "writing": 3, "language": 0, "archival": 1, "dh": 0 },
+    "needs": { "travel": true, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea128",
+    "title": "Private Korean Language Academies (Hagwon) in KL",
+    "tags": ["Language Education & Pedagogy", "Korean Studies (Malaysia)", "Economy & Development"],
+    "description": "Business models, teacher profiles, and learner outcomes in the hagwon sector.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 2, "coding": 1, "fieldwork": 1, "writing": 3, "language": 1, "archival": 0, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 2
+  },
+  {
+    "id": "ea129",
+    "title": "Korean Diaspora Entrepreneurs in Klang Valley",
+    "tags": ["Korean Studies (Malaysia)", "Entrepreneurship & SMEs", "Society & Social Change"],
+    "description": "Sector choices, financing, and community ties among small business owners.",
+    "skills": { "literature": 2, "qualitative": 3, "quantitative": 2, "coding": 2, "fieldwork": 2, "writing": 3, "language": 1, "archival": 0, "dh": 0 },
+    "needs": { "travel": true, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea130",
+    "title": "Korean Mobile Games: Monetization & Malaysian Youth",
+    "tags": ["Digital Culture & Platforms", "Popular Culture & Media", "Korean Studies (Malaysia)"],
+    "description": "App metadata sampling and user survey on spending, fandom, and gameplay time.",
+    "skills": { "literature": 2, "qualitative": 2, "quantitative": 3, "coding": 3, "fieldwork": 0, "writing": 3, "language": 0, "archival": 0, "dh": 2 },
+    "needs": { "travel": false, "ethics": false },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea131",
+    "title": "K-Beauty Retail Chains: Localization & Consumer Care",
+    "tags": ["Korean Studies (Malaysia)", "Business, Management & Work Culture", "Health, Healthcare & Public Health"],
+    "description": "Store audits and manager/customer interviews on service scripts and aftersales care.",
+    "skills": { "literature": 2, "qualitative": 3, "quantitative": 2, "coding": 1, "fieldwork": 2, "writing": 3, "language": 0, "archival": 0, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea132",
+    "title": "Exchange Alumni Networks: Malaysia–Korea",
+    "tags": ["Malaysia–East Asia Relations", "Youth, Education & Student Life", "South Korea"],
+    "description": "Network mapping of alumni associations and their professional activities.",
+    "skills": { "literature": 2, "qualitative": 3, "quantitative": 2, "coding": 1, "fieldwork": 1, "writing": 3, "language": 1, "archival": 1, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 2
+  },
+  {
+    "id": "ea133",
+    "title": "K-pop Activism & Boycott Cycles in Malaysia",
+    "tags": ["Korean Studies (Malaysia)", "Popular Culture & Media", "Politics, Elections & Civil Society"],
+    "description": "Content analysis of campaigns and interviews with organizers across cycles.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 2, "coding": 2, "fieldwork": 1, "writing": 3, "language": 0, "archival": 1, "dh": 1 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea134",
+    "title": "Korean TV News Framing of Malaysia (Comparative)",
+    "tags": ["Korean Studies (Malaysia)", "Media, Journalism & Public Opinion", "International Relations & Security"],
+    "description": "Sample Korean TV news and compare frames on Malaysia-related stories.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 2, "coding": 2, "fieldwork": 0, "writing": 3, "language": 2, "archival": 1, "dh": 1 },
+    "needs": { "travel": false, "ethics": false },
+    "timeDemand": 2
+  },
+
+  {
+    "id": "ea135",
+    "title": "Douyin vs TikTok: Cross-platform Content Flows into Malaysia",
+    "tags": ["Digital Culture & Platforms", "China", "Popular Culture & Media"],
+    "description": "Compare genres and engagement from CN-origin creators across platforms.",
+    "skills": { "literature": 2, "qualitative": 2, "quantitative": 3, "coding": 3, "fieldwork": 0, "writing": 3, "language": 0, "archival": 0, "dh": 2 },
+    "needs": { "travel": false, "ethics": false },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea136",
+    "title": "PRC Student Associations in Malaysian Universities",
+    "tags": ["China", "Youth, Education & Student Life", "Demography, Migration & Diaspora"],
+    "description": "Organization roles, welfare activities, and identity negotiation on campus.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 2, "coding": 1, "fieldwork": 1, "writing": 3, "language": 1, "archival": 0, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea137",
+    "title": "Chinese State Media (EN/CN/MY) Framing of Malaysia",
+    "tags": ["Media, Journalism & Public Opinion", "China", "International Relations & Security"],
+    "description": "Cross-language content analysis of Malaysia references in PRC state outlets.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 2, "coding": 2, "fieldwork": 0, "writing": 3, "language": 2, "archival": 1, "dh": 1 },
+    "needs": { "travel": false, "ethics": false },
+    "timeDemand": 2
+  },
+  {
+    "id": "ea138",
+    "title": "BRI Scholarships: Outcomes for Malaysian Recipients",
+    "tags": ["Malaysia–East Asia Relations", "China", "Economy & Development"],
+    "description": "Alumni survey/interviews on skills, networks, and career trajectories.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 3, "coding": 2, "fieldwork": 0, "writing": 3, "language": 1, "archival": 1, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea139",
+    "title": "PRC-linked SME Clusters in Penang",
+    "tags": ["Chinese Studies (Malaysia)", "Entrepreneurship & SMEs", "Trade, FDI & Supply Chains"],
+    "description": "Cluster mapping, supplier ties, and localization strategies in electronics and services.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 3, "coding": 2, "fieldwork": 2, "writing": 3, "language": 1, "archival": 1, "dh": 1 },
+    "needs": { "travel": true, "ethics": true },
+    "timeDemand": 4
+  },
+  {
+    "id": "ea140",
+    "title": "Digitizing New Village Heritage Collections",
+    "tags": ["Memory, Heritage & Museums", "Chinese Studies (Malaysia)", "Methods: Digital Humanities & GIS/Mapping"],
+    "description": "Scan, catalog, and publish community archives; create a simple story-map.",
+    "skills": { "literature": 3, "qualitative": 2, "quantitative": 1, "coding": 3, "fieldwork": 2, "writing": 3, "language": 1, "archival": 3, "dh": 3 },
+    "needs": { "travel": true, "ethics": false },
+    "timeDemand": 4
+  },
+  {
+    "id": "ea141",
+    "title": "TCM Insurance & Public Health Integration in Malaysia",
+    "tags": ["Health, Healthcare & Public Health", "Chinese Studies (Malaysia)", "Law, Governance & Public Policy"],
+    "description": "Policy review and practitioner interviews on reimbursement and quality assurance.",
+    "skills": { "literature": 4, "qualitative": 2, "quantitative": 2, "coding": 1, "fieldwork": 1, "writing": 3, "language": 1, "archival": 2, "dh": 1 },
+    "needs": { "travel": true, "ethics": true },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea142",
+    "title": "Mandarin-Medium Tutoring Market in Klang Valley",
+    "tags": ["Language Education & Pedagogy", "Chinese Studies (Malaysia)", "Economy & Development"],
+    "description": "Parent/student survey and provider interviews on pricing, curricula, and outcomes.",
+    "skills": { "literature": 3, "qualitative": 3, "quantitative": 2, "coding": 1, "fieldwork": 1, "writing": 3, "language": 2, "archival": 0, "dh": 0 },
+    "needs": { "travel": false, "ethics": true },
+    "timeDemand": 2
+  },
+  {
+    "id": "ea143",
+    "title": "WeChat Pay & Alipay Adoption by Malaysian SMEs",
+    "tags": ["Technology, Innovation & Industry 4.0", "China", "Business, Management & Work Culture"],
+    "description": "Merchant survey and transaction-flow mapping for Chinese payment rails.",
+    "skills": { "literature": 2, "qualitative": 2, "quantitative": 3, "coding": 3, "fieldwork": 1, "writing": 3, "language": 0, "archival": 0, "dh": 2 },
+    "needs": { "travel": false, "ethics": false },
+    "timeDemand": 3
+  },
+  {
+    "id": "ea144",
+    "title": "Post-COVID Mainland Chinese Tourism in Malaysia",
+    "tags": ["Tourism, Heritage Routes & Creative Industries", "China", "Economy & Development"],
+    "description": "Operator interviews and visitor intercept surveys on itineraries, spending, and platforms.",
+    "skills": { "literature": 2, "qualitative": 2, "quantitative": 3, "coding": 2, "fieldwork": 2, "writing": 3, "language": 0, "archival": 0, "dh": 0 },
+    "needs": { "travel": true, "ethics": true },
+    "timeDemand": 3
   }
 ]
