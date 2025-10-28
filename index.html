@@ -3,288 +3,354 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Research Topic Picker</title>
-  <meta name="description" content="Select interests, rate skills and constraints. We’ll rank topics and explain the fit clearly." />
+  <title>Research Topic Picker — East Asia</title>
+  <meta name="description" content="Select your interests, rate your skills & practical constraints. We’ll rank topics and explain the fit clearly." />
+
   <style>
     :root{
-      --bg:#f7fafc;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --text:#1f2937;
-      --primary:#4f46e5;
-      --primary-weak:#eef2ff;
-      --ok:#059669;
-      --warn:#b45309;
-      --bad:#b91c1c;
-      --chip:#e5e7eb;
-      --chip-text:#111827;
-      --chip-selected:#4f46e5;
-      --chip-selected-text:#fff;
-      --ring: rgba(79,70,229,.35);
-      --border:#e5e7eb;
-      --shadow: 0 8px 24px rgba(17,24,39,.06);
-      --radius: 14px;
+      --bg: #f7fafc;            /* light background */
+      --panel: #ffffff;         /* cards / panels */
+      --text: #0f172a;          /* main text */
+      --muted: #475569;         /* muted text */
+      --chip: #eef2ff;          /* chip idle */
+      --chip-text: #3730a3;
+      --chip-selected: #4338ca; /* chip selected bg */
+      --chip-selected-text: #ffffff;
+      --accent: #4f46e5;        /* controls */
+      --ring: rgba(79,70,229,.25);
+      --line: #e5e7eb;
+      --good: #16a34a;
+      --warn: #f59e0b;
+      --bad:  #dc2626;
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif}
-    a{color:var(--primary)}
-    .container{max-width:1080px;margin:0 auto;padding:32px 20px 96px}
-    h1{font-size:34px;margin:0 0 6px}
-    .sub{color:var(--muted);margin:0 0 26px}
-    .section{margin:26px 0}
-    .section h2{font-size:18px;margin:0 0 10px}
-    .group{margin:18px 0}
-    .group .label{font-weight:700;margin:0 0 10px}
-    .chips{display:flex;flex-wrap:wrap;gap:10px}
+
+    *{ box-sizing: border-box }
+    html, body{ height:100% }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    }
+
+    .wrap{ max-width:1100px; margin:0 auto; padding:28px 20px 60px }
+
+    h1{ font-size: clamp(28px, 3.2vw, 40px); margin: 0 0 6px }
+    .sub{ color:var(--muted); margin:0 0 24px }
+
+    /* section panels */
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      margin:14px 0;
+      box-shadow: 0 2px 10px rgba(15,23,42,.04);
+    }
+
+    /* interest chips */
+    .chip-row{ display:flex; flex-wrap:wrap; gap:10px; }
+    .row-head{ font-weight:700; margin:22px 0 10px }
     button.chip{
-      appearance:none;border:none;margin:0;padding:8px 12px;border-radius:999px;
-      background:var(--chip); color:var(--chip-text); cursor:pointer; font-size:14px; line-height:1;
-      transition:transform .05s ease, background .2s ease, box-shadow .2s ease;
+      appearance:none; border:1px solid #c7d2fe; cursor:pointer;
+      background:var(--chip); color:var(--chip-text);
+      padding:8px 12px; border-radius:999px; font-weight:600; font-size:14px;
+      transition: transform .05s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
     }
-    button.chip:hover{transform:translateY(-1px)}
-    button.chip[aria-pressed="true"]{
-      background:var(--chip-selected); color:var(--chip-selected-text);
-      box-shadow:0 0 0 4px var(--ring);
+    button.chip:hover{ transform: translateY(-1px); box-shadow:0 6px 16px var(--ring); }
+    /* selected / highlighted */
+    button.chip[aria-pressed="true"],
+    button.chip.selected{
+      background:var(--chip-selected);
+      color:var(--chip-selected-text);
+      border-color: transparent;
+      box-shadow: 0 0 0 4px var(--ring);
     }
-    .actions{display:flex;gap:12px;align-items:center}
-    .linky{background:none;border:none;color:var(--primary);cursor:pointer;font-size:14px;padding:0}
-    .cards{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px}
-    .card{
-      background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px;
-      box-shadow:var(--shadow)
+    button.chip:focus-visible{ outline:3px solid var(--ring); outline-offset:2px }
+
+    .controls-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:14px }
+    .ctrl{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px }
+    .ctrl h3{ font-size:14px; margin:0 0 8px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em }
+    .slider-row{ display:flex; align-items:center; gap:12px; margin:6px 0 }
+    .slider-row label{ flex: 0 0 170px }
+    .slider-row output{ min-width: 32px; text-align:right; color:var(--muted) }
+    input[type=range]{ width:100% }
+    .checks{ display:flex; gap:16px; flex-wrap:wrap }
+    .checks label{ display:flex; align-items:center; gap:8px }
+
+    .bar{
+      height:9px; background:#eef2f7; border-radius:999px; overflow:hidden; border:1px solid var(--line)
     }
-    .titleRow{display:flex;align-items:flex-start;gap:12px}
-    .rank{min-width:28px;height:28px;border-radius:999px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
-    .card h3{margin:0;font-size:18px}
-    .desc{color:var(--muted);margin:8px 0 10px}
-    .pillRow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
-    .pill{background:#eef2f7;border-radius:10px;padding:6px 10px;font-size:12px;border:1px solid var(--border)}
-    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:8px}
-    .box{background:#fafafa;border:1px dashed var(--border);border-radius:10px;padding:10px}
-    .fit{font-weight:700}
-    .fit.good{color:var(--ok)} .fit.mid{color:var(--warn)} .fit.bad{color:var(--bad)}
-    .suit{background:#f5f7ff;border:1px solid #e0e7ff;border-radius:10px;padding:12px;margin-top:10px;color:#1e2b6b}
-    .footer{margin-top:40px;color:var(--muted);text-align:center}
-    .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-    .sliderRow{display:grid;grid-template-columns:1fr 160px;align-items:center;gap:14px}
-    input[type="range"]{width:100%}
-    .badge{display:inline-flex;align-items:center;gap:8px}
-    .small{font-size:12px;color:var(--muted)}
-    .divider{height:1px;background:var(--border);margin:18px 0}
-    @media (min-width:900px){ .cards{grid-template-columns:1fr 1fr} }
+    .bar > span{ display:block; height:100%; background: linear-gradient(90deg,var(--accent),#22c55e); }
+
+    .result{ display:grid; grid-template-columns:1fr auto; gap:12px; align-items:baseline }
+    .result h2{ margin:0; font-size:20px }
+    .score{ font-weight:800; font-size:22px; color:var(--accent) }
+    .tags{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 0 }
+    .tag{ font-size:12px; padding:6px 10px; background:#f1f5f9; border:1px solid var(--line); border-radius:999px; color:#334155 }
+
+    .suit-line{
+      background:#f8fafc; border:1px dashed var(--line); border-radius:12px;
+      padding:10px 12px; color:#334155
+    }
+
+    .row{ display:grid; grid-template-columns: 1fr; gap:10px }
+    @media (min-width:720px){ .row{ grid-template-columns: repeat(3,1fr) } }
+
+    .muted{ color:var(--muted) }
+    .footer{ text-align:center; margin-top:26px; color:var(--muted) }
+    .small{ font-size:12px }
+
+    .btn-reset{ all:unset; }
+    .btn{
+      background: var(--accent); color:#fff; padding:10px 14px; border-radius:12px;
+      border:none; cursor:pointer; font-weight:700;
+      box-shadow: 0 6px 16px var(--ring);
+    }
+    .btn.secondary{
+      background:#e2e8f0; color:#0f172a;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="wrap">
     <h1>Research Topic Picker</h1>
     <p class="sub">Select your interests, rate your skills and practical constraints. We’ll rank topics and explain the fit clearly.</p>
 
     <!-- Interests -->
-    <div class="section" id="interestsSection">
-      <div class="row">
+    <section class="panel" id="interestsPanel">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
         <h2 style="margin:0">Select Interests</h2>
-        <div class="small">Choose 2–4 to start. You can always add more.</div>
-        <div style="flex:1"></div>
-        <button id="clearAll" class="linky" type="button">Clear all</button>
+        <button id="clearAll" class="btn secondary" type="button" title="Clear selected interests">Clear all</button>
       </div>
+      <p class="muted small">Choose 2–4 to start. You can always add more.</p>
 
       <div id="interestGroups"></div>
-    </div>
+    </section>
 
-    <div class="divider"></div>
-
-    <!-- Skills -->
-    <div class="section" id="skillsSection">
-      <h2>Rate Your Current Skills</h2>
-      <div class="small">0 = none, 4 = strong.</div>
-      <div class="group" id="skillsForm"></div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Constraints -->
-    <div class="section" id="constraintsSection">
-      <h2>Practical Constraints</h2>
-      <div class="group">
-        <div class="sliderRow">
-          <label for="timeAvail"><strong>Weekly time available</strong></label>
-          <div class="badge"><input id="timeAvail" type="range" min="1" max="5" step="1" value="3" /><span id="timeLabel">3 / 5</span></div>
+    <!-- Skills & Constraints -->
+    <section class="controls-grid" aria-label="Skill and constraint inputs">
+      <div class="ctrl">
+        <h3>Skills (0–4)</h3>
+        <div id="skillsSliders"></div>
+      </div>
+      <div class="ctrl">
+        <h3>Practical Constraints</h3>
+        <div class="slider-row">
+          <label for="timeAvail"><strong>Time available</strong> (1 = very limited, 5 = ample)</label>
+          <input id="timeAvail" type="range" min="1" max="5" step="1" value="3" />
+          <output id="timeOut">3</output>
+        </div>
+        <div class="checks">
+          <label><input id="travelOk" type="checkbox" /> I can travel if needed</label>
+          <label><input id="ethicsOk" type="checkbox" /> I can obtain ethics/consent if needed</label>
         </div>
       </div>
-      <div class="group row">
-        <label class="badge"><input type="checkbox" id="hasTravel" checked/> Travel/access OK</label>
-        <label class="badge"><input type="checkbox" id="hasEthics" checked/> Ethics/permissions OK</label>
-      </div>
-    </div>
-
-    <div class="divider"></div>
+    </section>
 
     <!-- Results -->
-    <div class="section">
-      <div class="row">
+    <section class="panel" id="resultsPanel">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
         <h2 style="margin:0">Suggested Topics</h2>
-        <div class="small" id="resultHint">Adjust anything—results update instantly.</div>
+        <span class="muted small">Sorted by overall fit</span>
       </div>
-      <div class="cards" id="results"></div>
-    </div>
+      <div id="results"></div>
+    </section>
 
-    <p class="footer">Developed by <strong>YatiPaidi</strong></p>
+    <p class="footer small">Developed by <strong>YatiPaidi</strong></p>
   </div>
 
   <script>
-    // ---------- Interest catalogue (grouped chips) ----------
-    const interestCatalogue = [
-      {
-        label: "Area Studies",
-        tags: [
-          "Chinese Studies (Malaysia)", "Japanese Studies (Malaysia)", "Korean Studies (Malaysia)",
-          "East Asia (Comparative/Regional)", "Malaysia–East Asia Relations", "Japan", "China", "South Korea", "North Korea"
-        ]
-      },
-      {
-        label: "Methods",
-        tags: [
-          "Methods: Survey","Methods: Ethnography","Methods: Archival & Document Analysis",
-          "Methods: Digital Humanities & GIS/Mapping","Methods: Computational Social Science","Methods: Quantitative/Statistics"
-        ]
-      },
-      {
-        label: "Language, Education & Society",
-        tags: [
-          "Language Education & Pedagogy","Language Policy & Planning","Writing Systems & Literacy",
-          "Sociolinguistics","Youth, Education & Student Life","Overseas Chinese/Japanese/Korean Diasporas"
-        ]
-      },
-      {
-        label: "Media, Culture & Platforms",
-        tags: [
-          "Media, Journalism & Public Opinion","Popular Culture & Media","Digital Culture & Platforms","Arts, Literature & Aesthetics",
-          "Tourism, Heritage Routes & Creative Industries"
-        ]
-      },
-      {
-        label: "Business, Economy & Work",
-        tags: [
-          "Business, Management & Work Culture","Economy & Development","Trade, FDI & Supply Chains",
-          "Entrepreneurship & SMEs","Corporate Governance, CSR & ESG"
-        ]
-      },
-      {
-        label: "Politics, Law & International Relations",
-        tags: [
-          "Law, Governance & Public Policy","Politics, Elections & Civil Society","International Relations & Security",
-          "Diplomacy, Soft Power & Cultural Exchange"
-        ]
-      },
-      {
-        label: "Society, Culture & Everyday Life",
-        tags: ["Culture & Everyday Life","Gender, Sexuality & Family","Society & Social Change"]
-      },
-      {
-        label: "Technology, Data & Environment",
-        tags: ["Technology, Innovation & Industry 4.0","AI, Data Governance & Privacy","Environment, Climate & Energy Transitions"]
-      },
-      {
-        label: "History, Heritage & Religion",
-        tags: [
-          "History (Modern & Contemporary)","History (Pre-modern)","Memory, Heritage & Museums",
-          "Religion & Philosophy","Colonialism & Postcoloniality"
-        ]
-      },
-      {
-        label: "Comparative & Cross-Cutting",
-        tags: ["Comparative & Cross-Cultural Studies","Demography, Migration & Diaspora"]
-      }
-    ];
+    // ---------- Interest catalogue (grouped as chips) ----------
+    const INTEREST_GROUPS = {
+      "Area Studies": [
+        "Chinese Studies (Malaysia)", "Japanese Studies (Malaysia)", "Korean Studies (Malaysia)",
+        "East Asia (Comparative/Regional)", "Malaysia–East Asia Relations",
+        "Japan", "China", "South Korea", "North Korea"
+      ],
+      "Methods": [
+        "Methods: Survey","Methods: Ethnography","Methods: Archival & Document Analysis",
+        "Methods: Digital Humanities & GIS/Mapping","Methods: Computational Social Science",
+        "Methods: Quantitative/Statistics"
+      ],
+      "Language, Education & Society": [
+        "Language Education & Pedagogy","Language Policy & Planning","Writing Systems & Literacy",
+        "Sociolinguistics","Youth, Education & Student Life"
+      ],
+      "Media, Culture & Platforms": [
+        "Media, Journalism & Public Opinion","Popular Culture & Media","Digital Culture & Platforms",
+        "Arts, Literature & Aesthetics","Tourism, Heritage Routes & Creative Industries"
+      ],
+      "Business, Economy & Work": [
+        "Business, Management & Work Culture","Economy & Development",
+        "Trade, FDI & Supply Chains","Entrepreneurship & SMEs","Corporate Governance, CSR & ESG"
+      ],
+      "Politics, Law & IR": [
+        "Law, Governance & Public Policy","International Relations & Security","Diplomacy, Soft Power & Cultural Exchange"
+      ],
+      "History, Heritage & Religion": [
+        "History (Modern & Contemporary)","History (Pre-modern)","History & Heritage",
+        "Memory, Heritage & Museums","Religion & Philosophy","Colonialism & Postcoloniality"
+      ],
+      "Technology, Data & Environment": [
+        "Technology & Society","Technology, Innovation & Industry 4.0","AI, Data Governance & Privacy",
+        "Environment, Climate & Energy Transitions","Urbanization, Housing & Infrastructure"
+      ]
+    };
 
-    // ---------- UI state ----------
+    // ---------- Render interest chips ----------
+    const groupsContainer = document.getElementById('interestGroups');
     const selectedInterests = new Set();
-    const skills = ["literature","qualitative","quantitative","coding","fieldwork","writing","language","archival","dh"];
-    const userSkills = Object.fromEntries(skills.map(k => [k,2]));
-    let topics = [];
 
-    // ---------- Render interest buttons ----------
-    function renderInterestButtons(){
-      const host = document.getElementById("interestGroups");
-      host.innerHTML = "";
-      interestCatalogue.forEach(group => {
-        const wrap = document.createElement("div");
-        wrap.className = "group";
-        const lab = document.createElement("div");
-        lab.className = "label";
-        lab.textContent = group.label;
-        wrap.appendChild(lab);
+    function renderInterestChips(){
+      groupsContainer.innerHTML = '';
+      Object.entries(INTEREST_GROUPS).forEach(([group, items])=>{
+        const head = document.createElement('div');
+        head.className = 'row-head';
+        head.textContent = group;
+        groupsContainer.appendChild(head);
 
-        const row = document.createElement("div");
-        row.className = "chips";
-        group.tags.forEach(tag => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "chip";
-          btn.textContent = tag;
-          btn.setAttribute("data-tag", tag);
-          btn.setAttribute("aria-pressed", "false");
-          btn.addEventListener("click", () => toggleInterest(btn, tag));
-          btn.addEventListener("keydown", (e) => {
-            if(e.key==="Enter"||e.key===" "){e.preventDefault(); toggleInterest(btn, tag);}
-          });
-          row.appendChild(btn);
+        const row = document.createElement('div');
+        row.className = 'chip-row';
+        items.forEach(tag=>{
+          const b = document.createElement('button');
+          b.className = 'chip';
+          b.type = 'button';
+          b.textContent = tag;
+          b.setAttribute('aria-pressed','false');
+          b.addEventListener('click', ()=> toggleInterest(b, tag));
+          row.appendChild(b);
         });
-        wrap.appendChild(row);
-        host.appendChild(wrap);
+        groupsContainer.appendChild(row);
       });
     }
 
     function toggleInterest(btn, tag){
       if(selectedInterests.has(tag)){
         selectedInterests.delete(tag);
-        btn.setAttribute("aria-pressed","false");
       }else{
         selectedInterests.add(tag);
-        btn.setAttribute("aria-pressed","true");
       }
+      const on = selectedInterests.has(tag);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.classList.toggle('selected', on);             // visual highlight
       scoreAndRender();
     }
 
-    // ---------- Render skill sliders ----------
-    function renderSkillSliders(){
-      const host = document.getElementById("skillsForm");
-      host.innerHTML = "";
-      skills.forEach(k=>{
-        const row = document.createElement("div");
-        row.className = "sliderRow";
-        const label = document.createElement("label");
-        label.setAttribute("for","s_"+k);
-        label.innerHTML = `<strong>${titleCase(k)}</strong>`;
-        const right = document.createElement("div");
-        right.className = "badge";
-        const slider = document.createElement("input");
-        slider.type="range"; slider.min="0"; slider.max="4"; slider.step="1"; slider.value = userSkills[k];
-        slider.id = "s_"+k;
-        const out = document.createElement("span");
-        out.textContent = userSkills[k]+" / 4";
-        slider.addEventListener("input", e => { userSkills[k] = +e.target.value; out.textContent = `${userSkills[k]} / 4`; scoreAndRender(); });
-        right.appendChild(slider); right.appendChild(out);
-        row.appendChild(label); row.appendChild(right);
-        host.appendChild(row);
+    document.getElementById('clearAll').addEventListener('click', ()=>{
+      selectedInterests.clear();
+      document.querySelectorAll('button.chip').forEach(b=>{
+        b.setAttribute('aria-pressed','false');
+        b.classList.remove('selected');                 // clear highlight
+      });
+      scoreAndRender();
+    });
+
+    renderInterestChips();
+
+    // ---------- Skills ----------
+    const SKILL_LIST = [
+      ['literature','Literature review'],
+      ['qualitative','Qualitative methods'],
+      ['quantitative','Quantitative/statistics'],
+      ['coding','Coding / scripting'],
+      ['fieldwork','Fieldwork / data collection'],
+      ['writing','Academic writing'],
+      ['language','CN/JP/KR language ability'],
+      ['archival','Archival / document work'],
+      ['dh','Digital humanities / GIS']
+    ];
+
+    const skillsHost = document.getElementById('skillsSliders');
+    function renderSkills(){
+      skillsHost.innerHTML = '';
+      SKILL_LIST.forEach(([key,label])=>{
+        const row = document.createElement('div');
+        row.className = 'slider-row';
+        row.innerHTML = `
+          <label for="sk_${key}">${label}</label>
+          <input id="sk_${key}" type="range" min="0" max="4" step="1" value="2" />
+          <output id="out_${key}">2</output>
+        `;
+        const range = row.querySelector('input');
+        const out = row.querySelector('output');
+        range.addEventListener('input', ()=>{ out.textContent = range.value; scoreAndRender(); });
+        skillsHost.appendChild(row);
       });
     }
+    renderSkills();
 
-    // ---------- Constraints listeners ----------
-    function bindConstraintControls(){
-      const t = document.getElementById("timeAvail");
-      const lab = document.getElementById("timeLabel");
-      t.addEventListener("input", e => { lab.textContent = `${e.target.value} / 5`; scoreAndRender(); });
-      document.getElementById("hasTravel").addEventListener("change", scoreAndRender);
-      document.getElementById("hasEthics").addEventListener("change", scoreAndRender);
-      document.getElementById("clearAll").addEventListener("click", ()=>{
-        selectedInterests.clear();
-        document.querySelectorAll('button.chip[aria-pressed="true"]').forEach(b=>b.setAttribute("aria-pressed","false"));
-        scoreAndRender();
-      });
+    // constraints outputs
+    const timeRange = document.getElementById('timeAvail');
+    const timeOut = document.getElementById('timeOut');
+    timeRange.addEventListener('input', ()=>{ timeOut.textContent = timeRange.value; scoreAndRender(); });
+    document.getElementById('travelOk').addEventListener('change', scoreAndRender);
+    document.getElementById('ethicsOk').addEventListener('change', scoreAndRender);
+
+    // ---------- Fetch topics ----------
+    let TOPICS = [];
+    async function loadTopics(){
+      try{
+        const res = await fetch('topics.json', { cache: 'no-store' });
+        if(!res.ok) throw new Error('Cannot load topics.json');
+        TOPICS = await res.json();
+      }catch(err){
+        console.error(err);
+        document.getElementById('results').innerHTML = `
+          <div class="panel" style="border-style:dashed">
+            <strong>Couldn’t load <code>topics.json</code>.</strong>
+            <div class="muted small" style="margin-top:6px">Ensure the file exists in the same folder as this index and is valid JSON.</div>
+          </div>`;
+      }
+      scoreAndRender();
+    }
+    loadTopics();
+
+    // ---------- Scoring ----------
+    function interestScore(tags){
+      if(selectedInterests.size === 0) return 50; // neutral when nothing picked
+      const overlap = tags.filter(t => selectedInterests.has(t)).length;
+      const base = (overlap / Math.max(tags.length, 3)) * 100;
+      // small bonus for picking any of the topic's method tags
+      const methodHit = tags.some(t => t.startsWith('Methods:') && selectedInterests.has(t));
+      return Math.min(100, base + (methodHit ? 8 : 0));
     }
 
-    // ---------- Suitability line (as requested) ----------
+    function capabilityScore(skillsNeeded){
+      let diffs = [];
+      SKILL_LIST.forEach(([key])=>{
+        const user = Number(document.getElementById('sk_'+key).value);
+        const req  = (skillsNeeded && Number.isFinite(skillsNeeded[key])) ? skillsNeeded[key] : 0;
+        diffs.push(Math.abs(user - req) / 4); // normalize 0–1
+      });
+      const avgGap = diffs.reduce((a,b)=>a+b,0) / diffs.length;
+      return Math.max(0, 100 * (1 - avgGap));
+    }
+
+    function constraintsScore(needs, timeDemand){
+      const timeAvail = Number(timeRange.value);
+      const travel = document.getElementById('travelOk').checked;
+      const ethics = document.getElementById('ethicsOk').checked;
+      let score = 100;
+
+      // time penalty
+      if(timeAvail < (timeDemand || 3)){
+        const gap = (timeDemand || 3) - timeAvail;      // 0..3
+        score -= gap * 18;                              // each step ~18 points
+      }
+      // travel / ethics
+      if(needs && needs.travel && !travel) score -= 22;
+      if(needs && needs.ethics && !ethics) score -= 18;
+
+      return Math.max(0, Math.min(100, score));
+    }
+
+    function finalScore(intS, capS, conS){
+      // weights: interests 0.45, capability 0.35, constraints 0.20
+      return 0.45*intS + 0.35*capS + 0.20*conS;
+    }
+
+    // NEW: concise one-sentence suitability line (as requested)
     function suitabilityLine(score) {
       const s = Math.round(score.finalScore);
       const interestPart = score.interestScore >= 80
@@ -308,106 +374,96 @@
       return `Overall fit ${s}/100 — this topic ${interestPart}; ${skillPart}, ${feasibilityPart}.`;
     }
 
-    // ---------- Scoring ----------
-    function scoreTopic(t){
-      // Interest score
-      let interestScore = 50; // neutral default
-      if(selectedInterests.size>0){
-        const match = t.tags.filter(tag => selectedInterests.has(tag)).length;
-        const denom = Math.max(1, Math.min(selectedInterests.size, 6)); // cap to avoid over-penalty
-        interestScore = Math.min(100, Math.round((match/denom)*100));
-      }
-
-      // Capability score (how well user meets/approaches requirements)
-      let have = 0, total = 0;
-      for(const k of skills){
-        const need = (t.skills && typeof t.skills[k]==="number") ? t.skills[k] : 0;
-        const mine = userSkills[k] ?? 0;
-        // give partial credit even if below need
-        const credit = need===0 ? 1 : Math.min(1, mine/(need||1));
-        have += credit; total += 1;
-      }
-      const capabilityScore = Math.round((have/total)*100);
-
-      // Constraints score
-      const timeAvail = +document.getElementById("timeAvail").value; // 1..5
-      const timeDemand = t.timeDemand ?? 3; // 1..5 (5 heavy)
-      let timeOK = Math.max(0, 1 - Math.max(0, (timeDemand - timeAvail))/4); // linear penalty
-      let travelOK = (t.needs && t.needs.travel) ? (document.getElementById("hasTravel").checked ? 1 : 0) : 1;
-      let ethicsOK = (t.needs && t.needs.ethics) ? (document.getElementById("hasEthics").checked ? 1 : 0) : 1;
-      const constraintsScore = Math.round(((timeOK + travelOK + ethicsOK) / 3) * 100);
-
-      // Final
-      const finalScore = Math.round(0.45*interestScore + 0.35*capabilityScore + 0.20*constraintsScore);
-      return {interestScore, capabilityScore, constraintsScore, finalScore};
-    }
-
     // ---------- Render results ----------
     function scoreAndRender(){
-      if(!Array.isArray(topics) || topics.length===0) return;
-      const results = document.getElementById("results");
-      const ranked = topics.map(t => ({t, s: scoreTopic(t)}))
-                           .sort((a,b)=>b.s.finalScore - a.s.finalScore)
-                           .slice(0,12);
-      results.innerHTML = "";
-      ranked.forEach((row, i) => {
-        const {t, s} = row;
-        const card = document.createElement("div"); card.className="card";
+      if(!TOPICS || TOPICS.length === 0){
+        document.getElementById('results').innerHTML = '';
+        return;
+      }
+      const scored = TOPICS.map(t=>{
+        const i = interestScore(t.tags || []);
+        const c = capabilityScore(t.skills || {});
+        const k = constraintsScore(t.needs || {}, t.timeDemand);
+        return { topic: t, interestScore:i, capabilityScore:c, constraintsScore:k, finalScore: finalScore(i,c,k) };
+      }).sort((a,b)=> b.finalScore - a.finalScore);
 
-        const titleRow = document.createElement("div"); titleRow.className="titleRow";
-        titleRow.innerHTML = `<div class="rank">${i+1}</div><h3>${escapeHtml(t.title)}</h3>`;
-        card.appendChild(titleRow);
+      const frag = document.createDocumentFragment();
 
-        const desc = document.createElement("div"); desc.className="desc";
-        desc.textContent = t.description || t.title;
-        card.appendChild(desc);
+      scored.slice(0, 18).forEach((s, idx)=>{
+        const card = document.createElement('div');
+        card.className = 'panel';
+
+        const head = document.createElement('div');
+        head.className = 'result';
+        head.innerHTML = `
+          <h2>${idx+1}. ${escapeHtml(s.topic.title)}</h2>
+          <div class="score" title="Overall fit score">${Math.round(s.finalScore)}</div>
+        `;
+        card.appendChild(head);
+
+        if(s.topic.description){
+          const p = document.createElement('p');
+          p.style.margin = '4px 0 8px';
+          p.textContent = s.topic.description;
+          card.appendChild(p);
+        }
 
         // tags
-        const pills = document.createElement("div"); pills.className="pillRow";
-        t.tags.forEach(tag=>{
-          const p = document.createElement("span"); p.className="pill"; p.textContent = tag; pills.appendChild(p);
-        });
-        card.appendChild(pills);
+        if(Array.isArray(s.topic.tags) && s.topic.tags.length){
+          const tags = document.createElement('div');
+          tags.className = 'tags';
+          s.topic.tags.forEach(t=>{
+            const span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = t;
+            tags.appendChild(span);
+          });
+          card.appendChild(tags);
+        }
 
-        // triplet boxes
-        const grid = document.createElement("div"); grid.className="grid3";
-        grid.appendChild(boxMetric("Interests", s.interestScore));
-        grid.appendChild(boxMetric("Capabilities", s.capabilityScore));
-        grid.appendChild(boxMetric("Constraints", s.constraintsScore));
-        card.appendChild(grid);
+        // bars
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `
+          <div>
+            <div class="muted small" style="margin-bottom:6px">Interests</div>
+            <div class="bar"><span style="width:${s.interestScore.toFixed(0)}%"></span></div>
+            <div class="muted small" style="margin-top:6px">${s.interestScore.toFixed(0)} / 100</div>
+          </div>
+          <div>
+            <div class="muted small" style="margin-bottom:6px">Capabilities</div>
+            <div class="bar"><span style="width:${s.capabilityScore.toFixed(0)}%"></span></div>
+            <div class="muted small" style="margin-top:6px">${s.capabilityScore.toFixed(0)} / 100</div>
+          </div>
+          <div>
+            <div class="muted small" style="margin-bottom:6px">Constraints</div>
+            <div class="bar"><span style="width:${s.constraintsScore.toFixed(0)}%"></span></div>
+            <div class="muted small" style="margin-top:6px">${s.constraintsScore.toFixed(0)} / 100</div>
+          </div>
+        `;
+        card.appendChild(row);
 
-        const suit = document.createElement("div"); suit.className="suit"; suit.textContent = suitabilityLine(s);
+        // suitability line
+        const suit = document.createElement('div');
+        suit.className = 'suit-line';
+        suit.style.marginTop = '12px';
+        suit.textContent = suitabilityLine(s);
         card.appendChild(suit);
 
-        results.appendChild(card);
+        frag.appendChild(card);
       });
+
+      const results = document.getElementById('results');
+      results.innerHTML = '';
+      results.appendChild(frag);
     }
 
-    function boxMetric(label, val){
-      const b = document.createElement("div"); b.className="box";
-      const cls = val>=80 ? "good" : val>=50 ? "mid" : "bad";
-      b.innerHTML = `<div class="small">${label}</div><div class="fit ${cls}">${val} / 100</div>`;
-      return b;
+    // ---------- Helpers ----------
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+        .replaceAll('"','&quot;').replaceAll("'","&#039;");
     }
-
-    function titleCase(k){ return k.charAt(0).toUpperCase()+k.slice(1); }
-    function escapeHtml(s){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-    // ---------- Init ----------
-    async function init(){
-      renderInterestButtons();
-      renderSkillSliders();
-      bindConstraintControls();
-      try{
-        const res = await fetch("topics.json",{cache:"no-store"});
-        topics = await res.json();
-      }catch(e){
-        console.error("Failed to load topics.json", e);
-        topics = [];
-      }
-      scoreAndRender();
-    }
-    init();
   </script>
 </body>
 </html>
