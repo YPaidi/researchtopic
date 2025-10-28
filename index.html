@@ -170,6 +170,33 @@
       return badges;
     }
 
+// NEW: concise one-sentence suitability line
+    function suitabilityLine(score) {
+      const s = Math.round(score.finalScore);
+      const interestPart = score.interestScore >= 80
+      ? "matches your interests very well"
+      : score.interestScore >= 50
+      ? "partially matches your interests"
+      : "has limited overlap with your interests";
+
+
+      const skillPart = score.capabilityScore >= 80
+      ? "your current skills are well aligned"
+      : score.capabilityScore >= 50
+      ? "you may need to polish some key skills"
+      : "you will need significant upskilling";
+
+
+      const feasibilityPart = score.constraintsScore >= 80
+      ? "and it is feasible within your time and access"
+      : score.constraintsScore >= 50
+      ? "and it is likely feasible with careful planning"
+      : "and it will require more time or access to be feasible";
+
+
+      return `Overall fit ${s}/100 — this topic ${interestPart}; ${skillPart}, ${feasibilityPart}.`;
+    }
+    
     /* ---------- App ---------- */
     function App() {
       const [step, setStep] = useState(1);
