@@ -2,400 +2,427 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
-  <title>Research Topic Picker — East Asia (Malaysia)</title>
-  <meta name="description" content="Pick interests, rate capabilities and constraints, and see tailored East-Asia research topics." />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Research Topic Picker — East Asia</title>
+  <meta name="description" content="Select interests, rate skills & constraints. We rank topics and explain the fit clearly." />
   <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    html, body { height: 100%; background: #0f172a; }
-    .chip { @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium mr-2 mb-2; }
-    .kpi  { @apply rounded-xl border p-3 text-slate-900 bg-white/70; }
-    .card { @apply rounded-2xl border bg-white/90 shadow-sm p-5 md:p-6; }
+    /* Button (chip) toggles */
+    .chip {
+      @apply inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition;
+    }
+    .chip-on {
+      @apply bg-indigo-600 text-white border-indigo-600 shadow-sm;
+    }
+    .chip-off {
+      @apply bg-white text-slate-700 border-slate-300 hover:bg-slate-50;
+    }
+    .card {
+      @apply bg-white rounded-2xl shadow-sm ring-1 ring-slate-200;
+    }
+    .badge {
+      @apply inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-xs font-medium;
+    }
+    .meter {
+      @apply rounded-lg bg-slate-100 h-2 w-full overflow-hidden;
+    }
+    .meter > span {
+      @apply block h-2 bg-indigo-600;
+    }
+    /* Make range sliders friendlier */
+    input[type="range"] {
+      accent-color: #4f46e5; /* indigo-600 */
+    }
   </style>
 </head>
-<body class="text-slate-900">
-  <div id="root" class="min-h-full"></div>
+<body class="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-800">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <header class="mb-6">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900">Research Topic Picker</h1>
+      <p class="mt-2 text-slate-600">Select your interests, rate your skills and practical constraints. We’ll rank topics and explain the fit clearly.</p>
+    </header>
 
-  <!-- React 18 UMD + ReactDOM + Babel (for in-browser JSX) -->
+    <div id="root"></div>
+
+    <!-- Footer -->
+    <footer class="mt-12 pt-6 border-t border-slate-200 text-center text-sm text-slate-500">
+      Developed by <span class="font-semibold">YatiPaidi</span>
+    </footer>
+  </div>
+
+  <!-- React + ReactDOM + Babel (for in-browser JSX transpile) -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel">
-    const { useEffect, useMemo, useState } = React;
+    const { useState, useEffect, useMemo } = React;
 
-    // ---------- Utilities ----------
-    const clamp = (v, lo=0, hi=100) => Math.max(lo, Math.min(hi, v));
-    const sum = arr => arr.reduce((a,b)=>a+b,0);
+    /** -------------------------------
+     *  Interest groups (buttons)
+     *  Arrange by field; anything not listed will fall into “Other”.
+     * --------------------------------*/
+    const INTEREST_GROUPS = {
+      "Area Studies": [
+        "Chinese Studies (Malaysia)", "Japanese Studies (Malaysia)", "Korean Studies (Malaysia)",
+        "East Asia (Comparative/Regional)", "Malaysia–East Asia Relations",
+        "Japan", "China", "South Korea", "North Korea"
+      ],
+      "Methods": [
+        "Methods: Survey", "Methods: Ethnography",
+        "Methods: Archival & Document Analysis",
+        "Methods: Digital Humanities & GIS/Mapping",
+        "Methods: Computational Social Science",
+        "Methods: Quantitative/Statistics"
+      ],
+      "Language, Education & Society": [
+        "Language Education & Pedagogy", "Language Policy & Planning",
+        "Writing Systems & Literacy", "Sociolinguistics",
+        "Youth, Education & Student Life"
+      ],
+      "Media, Culture & Platforms": [
+        "Media, Journalism & Public Opinion", "Popular Culture & Media",
+        "Digital Culture & Platforms", "Arts, Literature & Aesthetics",
+        "Tourism, Heritage Routes & Creative Industries"
+      ],
+      "Business, Economy & Work": [
+        "Business, Management & Work Culture", "Economy & Development",
+        "Trade, FDI & Supply Chains", "Entrepreneurship & SMEs",
+        "Corporate Governance, CSR & ESG"
+      ],
+      "Politics, Law & IR": [
+        "Law, Governance & Public Policy", "International Relations & Security",
+        "Diplomacy, Soft Power & Cultural Exchange",
+        "Politics, Elections & Civil Society"
+      ],
+      "History, Memory & Heritage": [
+        "History (Modern & Contemporary)", "History (Pre-modern)",
+        "Memory, Heritage & Museums", "Colonialism & Postcoloniality"
+      ],
+      "Society, Health & Family": [
+        "Society & Social Change", "Demography, Migration & Diaspora",
+        "Gender, Sexuality & Family", "Health, Healthcare & Public Health",
+        "Sport & Leisure Studies", "Urbanization, Housing & Infrastructure"
+      ],
+      "Technology, Data & Environment": [
+        "Technology, Innovation & Industry 4.0", "AI, Data Governance & Privacy",
+        "Environment, Climate & Energy Transitions", "Technology & Society"
+      ],
+    };
 
-    const ALL_SKILLS = [
-      "literature","qualitative","quantitative","coding",
-      "fieldwork","writing","language","archival","dh"
+    /** Default skill labels */
+    const SKILL_LABELS = [
+      ["literature", "Literature review"],
+      ["qualitative", "Qualitative methods"],
+      ["quantitative", "Quantitative/statistics"],
+      ["coding", "Coding / tools"],
+      ["fieldwork", "Fieldwork / data collection"],
+      ["writing", "Academic writing"],
+      ["language", "Language proficiency (CN/JP/KR)"],
+      ["archival", "Archival / document work"],
+      ["dh", "Digital humanities / mapping"]
     ];
 
-    // ---------- Suitability line (as requested) ----------
-    function suitabilityLine(score) {
-      const s = Math.round(score.finalScore);
-      const interestPart =
-        score.interestScore >= 80
-          ? "matches your interests very well"
-          : score.interestScore >= 50
-          ? "partially matches your interests"
-          : "has limited overlap with your interests";
+    /** Utility: clamp 0..100 */
+    const clamp100 = (v) => Math.max(0, Math.min(100, v));
 
-      const skillPart =
-        score.capabilityScore >= 80
-          ? "your current skills are well aligned"
-          : score.capabilityScore >= 50
-          ? "you may need to polish some key skills"
-          : "you will need significant upskilling";
+    /** Scoring
+     * interestScore: overlap of selected interests with topic tags
+     * capabilityScore: shortfall-based (no penalty if you meet/exceed)
+     * constraintsScore: time/travel/ethics feasibility
+     */
+    function scoreTopic(topic, user) {
+      // Interests
+      let matches = topic.tags.filter(t => user.interests.has(t)).length;
+      let base = user.interests.size === 0 ? 0.6 : matches / Math.max(1, user.interests.size);
+      const interestScore = clamp100(Math.round(base * 100));
 
-      const feasibilityPart =
-        score.constraintsScore >= 80
-          ? "and it is feasible within your time and access"
-          : score.constraintsScore >= 50
-          ? "and it is likely feasible with careful planning"
-          : "and it will require more time or access to be feasible";
+      // Capabilities (each skill 0..4)
+      const reqs = topic.skills || {};
+      const dims = Object.keys(reqs);
+      let shortfalls = dims.map(k => Math.max(0, (reqs[k] ?? 0) - (user.skills[k] ?? 0)));
+      let avgShortfall = shortfalls.length ? shortfalls.reduce((a,b)=>a+b,0)/shortfalls.length : 0;
+      const capabilityScore = clamp100(Math.round(100 - (avgShortfall/4)*100));
 
-      return `Overall fit ${s}/100 — this topic ${interestPart}; ${skillPart}, ${feasibilityPart}.`;
-    }
+      // Constraints
+      let c = 100;
+      if (topic.needs?.travel && !user.canTravel) c -= 30;
+      if (topic.needs?.ethics && !user.canEthics) c -= 25;
+      const gap = (topic.timeDemand ?? 3) - user.timeAvailable; // positive if topic heavier
+      if (gap > 0) c -= gap * 20; // each level heavier chops 20
+      const constraintsScore = clamp100(Math.round(c));
 
-    // ---------- Scoring ----------
-    function makeProfile(selectedInterests, userSkills, userConstraints) {
-      return { selectedInterests, userSkills, userConstraints };
-    }
-
-    function scoreInterests(topic, selectedInterests) {
-      if (!selectedInterests.length) return 50; // neutral if user didn't choose
-      const set = new Set(selectedInterests);
-      const overlap = topic.tags.filter(t => set.has(t)).length;
-      return clamp(Math.round((overlap / selectedInterests.length) * 100));
-    }
-
-    function scoreCapabilities(topic, userSkills) {
-      // topic.skills are required levels (0–4). Score: how much of the requirement user already meets.
-      const needs = ALL_SKILLS.map(k => topic.skills?.[k] ?? 0);
-      const have  = ALL_SKILLS.map(k => userSkills?.[k] ?? 0);
-
-      let parts = needs.map((need, i) => {
-        if (need <= 0) return 1;                 // no requirement → perfect
-        const ratio = Math.min(have[i], need) / need;
-        return ratio;                            // 0..1
-      });
-
-      return clamp(Math.round((sum(parts) / parts.length) * 100));
-    }
-
-    function scoreConstraints(topic, c) {
-      // c: { timeAvail(1..5), travel:boolean, ethics:boolean }
-      const timeOk = Math.min(c.timeAvail, topic.timeDemand ?? 3) / (topic.timeDemand ?? 3);
-      let s = 100 * timeOk;
-
-      if (topic.needs?.travel && !c.travel) s -= 40;
-      if (topic.needs?.ethics && !c.ethics) s -= 30;
-
-      return clamp(Math.round(s));
-    }
-
-    function calcFit(topic, profile) {
-      const interestScore    = scoreInterests(topic, profile.selectedInterests);
-      const capabilityScore  = scoreCapabilities(topic, profile.userSkills);
-      const constraintsScore = scoreConstraints(topic, profile.userConstraints);
-
-      // weights (you can tweak)
-      const WEIGHTS = { interests: 0.55, capability: 0.35, constraints: 0.10 };
-
-      const finalScore = Math.round(
-        interestScore * WEIGHTS.interests +
-        capabilityScore * WEIGHTS.capability +
-        constraintsScore * WEIGHTS.constraints
-      );
+      // Weighted final
+      const finalScore = Math.round(0.40*interestScore + 0.35*capabilityScore + 0.25*constraintsScore);
 
       return { interestScore, capabilityScore, constraintsScore, finalScore };
     }
 
-    // ---------- Small helpers ----------
-    function sharesAnyTag(topic, selected) {
-      const set = new Set(selected);
-      return topic.tags.some(t => set.has(t));
+    // NEW: concise one-sentence suitability line
+    function suitabilityLine(score) {
+      const s = Math.round(score.finalScore);
+      const interestPart = score.interestScore >= 80
+        ? "matches your interests very well"
+        : score.interestScore >= 50
+        ? "partially matches your interests"
+        : "has limited overlap with your interests";
+
+      const skillPart = score.capabilityScore >= 80
+        ? "your current skills are well aligned"
+        : score.capabilityScore >= 50
+        ? "you may need to polish some key skills"
+        : "you will need significant upskilling";
+
+      const feasibilityPart = score.constraintsScore >= 80
+        ? "and it is feasible within your time and access"
+        : score.constraintsScore >= 50
+        ? "and it is likely feasible with careful planning"
+        : "and it will require more time or access to be feasible";
+
+      return `Overall fit ${s}/100 — this topic ${interestPart}; ${skillPart}, ${feasibilityPart}.`;
     }
 
-    function uniqSorted(arr) {
-      return [...new Set(arr)].sort((a,b)=>a.localeCompare(b));
+    /** Chip button */
+    function Chip({label, active, onClick}) {
+      return (
+        <button
+          type="button"
+          className={`chip ${active ? 'chip-on' : 'chip-off'} mr-2 mb-2`}
+          onClick={onClick}
+          aria-pressed={active}
+        >
+          {label}
+        </button>
+      );
     }
 
-    // ---------- Components ----------
+    /** Small stat block */
+    function Stat({label, value}) {
+      return (
+        <div className="p-3 rounded-xl bg-slate-50 ring-1 ring-slate-200">
+          <div className="text-xs font-medium text-slate-500">{label}</div>
+          <div className="mt-1 flex items-center gap-3">
+            <div className="meter"><span style={{width: `${value}%`}}></span></div>
+            <div className="text-sm font-semibold text-slate-700 w-12 text-right">{value} / 100</div>
+          </div>
+        </div>
+      );
+    }
+
+    /** App */
     function App() {
       const [topics, setTopics] = useState([]);
-      const [loadErr, setLoadErr] = useState(null);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
 
-      // user inputs
-      const [selectedInterests, setSelectedInterests] = useState([]);
-      const [userSkills, setUserSkills] = useState(() =>
-        Object.fromEntries(ALL_SKILLS.map(k => [k, 2]))
-      );
-      const [userConstraints, setUserConstraints] = useState({
-        timeAvail: 3, travel: true, ethics: true
+      // Interests
+      const [selected, setSelected] = useState(new Set());
+
+      // Skills 0..4 defaults
+      const [skills, setSkills] = useState({
+        literature: 3, qualitative: 3, quantitative: 2, coding: 2, fieldwork: 2,
+        writing: 3, language: 1, archival: 2, dh: 2
       });
 
-      const [onlyMatchAnyTag, setOnlyMatchAnyTag] = useState(true);
+      // Constraints
+      const [timeAvailable, setTimeAvailable] = useState(3); // 1=very light ... 5=very heavy
+      const [canTravel, setCanTravel] = useState(true);
+      const [canEthics, setCanEthics] = useState(true);
 
       // Load topics.json
       useEffect(() => {
-        let alive = true;
-        async function load() {
+        (async () => {
           try {
-            const res = await fetch("topics.json", { cache: "no-store" });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const res = await fetch('topics.json', {cache: 'no-store'});
+            if (!res.ok) throw new Error('Failed to load topics.json');
             const data = await res.json();
-            if (alive) setTopics(data);
+            setTopics(Array.isArray(data) ? data : (data.topics ?? []));
+            setLoading(false);
           } catch (e) {
-            console.error(e);
-            if (alive) setLoadErr(
-              "Could not load topics.json. If you opened this file directly (file://), please host with a simple server or GitHub Pages."
-            );
+            setError(e.message || 'Error loading data');
+            setLoading(false);
           }
-        }
-        load();
-        return () => { alive = false; };
+        })();
       }, []);
 
-      const allTags = useMemo(() => {
-        return uniqSorted(topics.flatMap(t => t.tags || []));
+      // Build “Other” group from tags present in data but not listed
+      const groupedTags = useMemo(() => {
+        const known = new Set(Object.values(INTEREST_GROUPS).flat());
+        const seen = new Set();
+        topics.forEach(t => (t.tags||[]).forEach(tag => seen.add(tag)));
+        const other = [...seen].filter(t => !known.has(t)).sort();
+        return {...INTEREST_GROUPS, ...(other.length ? {"Other": other} : {})};
       }, [topics]);
 
-      // Japan-focus prefilter (based on selected interests)
-      const requireJapan = useMemo(
-        () => selectedInterests.some(i => /japan|japanese/i.test(i)),
-        [selectedInterests]
-      );
+      // Toggle a tag
+      const toggleTag = (tag) => {
+        setSelected(prev => {
+          const next = new Set(prev);
+          if (next.has(tag)) next.delete(tag); else next.add(tag);
+          return next;
+        });
+      };
 
-      const candidateTopics = useMemo(() => {
-        if (!topics.length) return [];
+      const clearTags = () => setSelected(new Set());
 
-        const pool = requireJapan
-          ? topics.filter(t => t.tags.some(tag => /japan|japanese/i.test(tag)))
-          : topics;
+      // User profile for scoring
+      const userProfile = useMemo(() => ({
+        interests: selected,
+        skills,
+        timeAvailable,
+        canTravel,
+        canEthics
+      }), [selected, skills, timeAvailable, canTravel, canEthics]);
 
-        if (!onlyMatchAnyTag || selectedInterests.length === 0) return pool;
-
-        const tagMatched = pool.filter(t => sharesAnyTag(t, selectedInterests));
-        return tagMatched.length ? tagMatched : pool;
-      }, [topics, selectedInterests, onlyMatchAnyTag, requireJapan]);
-
-      const profile = useMemo(
-        () => makeProfile(selectedInterests, userSkills, userConstraints),
-        [selectedInterests, userSkills, userConstraints]
-      );
-
-      const scored = useMemo(() => {
-        return candidateTopics
-          .map(t => ({ topic: t, score: calcFit(t, profile) }))
-          .sort((a,b) => b.score.finalScore - a.score.finalScore)
-          .slice(0, 12); // top 12
-      }, [candidateTopics, profile]);
-
-      function toggleInterest(tag) {
-        setSelectedInterests(prev =>
-          prev.includes(tag) ? prev.filter(x => x !== tag) : [...prev, tag]
-        );
-      }
+      // Scored & sorted topics
+      const ranked = useMemo(() => {
+        return topics.map(t => {
+          const s = scoreTopic(t, userProfile);
+          return {...t, _score: s, _fit: s.finalScore};
+        }).sort((a,b) => b._fit - a._fit);
+      }, [topics, userProfile]);
 
       return (
-        <main className="max-w-6xl mx-auto p-4 md:p-8">
-          <header className="mb-6">
-            <h1 className="text-white text-2xl md:text-3xl font-semibold">Research Topic Picker</h1>
-            <p className="text-slate-300 mt-1 text-sm md:text-base">
-              Select your interests, rate your skills & practical constraints. We’ll rank topics and explain the fit clearly.
-            </p>
-            {loadErr && (
-              <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700">
-                {loadErr}
+        <div className="space-y-8">
+          {/* Interests */}
+          <section className="card p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900">Select Interests</h2>
+                <p className="text-sm text-slate-600">Choose 2–4 to start. You can always add more.</p>
               </div>
-            )}
-          </header>
-
-          {/* Controls */}
-          <section className="grid md:grid-cols-3 gap-6 mb-8">
-            {/* Interests */}
-            <div className="card md:col-span-3">
-              <div className="flex items-start justify-between">
-                <h2 className="text-lg font-semibold">Interests</h2>
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4"
-                    checked={onlyMatchAnyTag}
-                    onChange={e => setOnlyMatchAnyTag(e.target.checked)}
-                  />
-                  <span>Prefer topics sharing my selected tags</span>
-                </label>
+              <div className="flex items-center gap-2">
+                <button className="chip chip-off" onClick={clearTags}>Clear all</button>
               </div>
-              <div className="mt-3 -mb-2">
-                {allTags.map(tag => (
-                  <button
-                    key={tag}
-                    onClick={() => toggleInterest(tag)}
-                    className={
-                      "chip " +
-                      (selectedInterests.includes(tag)
-                        ? "bg-indigo-600 text-white border-indigo-600"
-                        : "bg-white text-slate-700 border-slate-300 hover:border-slate-400")
-                    }
-                    title={tag}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-              {selectedInterests.length === 0 && (
-                <p className="mt-3 text-sm text-slate-500">Tip: pick at least 2–4 interests for better matches.</p>
-              )}
             </div>
 
-            {/* Skills */}
-            <div className="card md:col-span-2">
-              <h2 className="text-lg font-semibold">Capabilities (self-rating)</h2>
-              <p className="text-sm text-slate-600">0 = none, 4 = strong.</p>
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {ALL_SKILLS.map(k => (
-                  <div key={k} className="flex items-center justify-between gap-4">
-                    <label className="capitalize text-sm font-medium">{k}</label>
+            <div className="mt-4 space-y-4">
+              {Object.entries(groupedTags).map(([group, tags]) => (
+                <div key={group}>
+                  <div className="text-sm font-semibold text-slate-700 mb-2">{group}</div>
+                  <div className="flex flex-wrap">
+                    {tags.map(tag => (
+                      <Chip
+                        key={tag}
+                        label={tag}
+                        active={selected.has(tag)}
+                        onClick={() => toggleTag(tag)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Skills & Constraints */}
+          <section className="grid lg:grid-cols-2 gap-6">
+            <div className="card p-5">
+              <h3 className="text-lg font-semibold text-slate-900">Rate Your Skills</h3>
+              <p className="text-sm text-slate-600 mb-3">0 = none, 4 = strong.</p>
+              <div className="space-y-4">
+                {SKILL_LABELS.map(([key, label]) => (
+                  <div key={key}>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-700">{label}</span>
+                      <span className="font-semibold text-slate-800">{skills[key]}</span>
+                    </div>
                     <input
                       type="range" min="0" max="4" step="1"
-                      value={userSkills[k]}
-                      onChange={e => setUserSkills(s => ({ ...s, [k]: Number(e.target.value) }))}
-                      className="w-40"
+                      value={skills[key]}
+                      onChange={e => setSkills(s => ({...s, [key]: Number(e.target.value)}))}
+                      className="w-full"
+                      aria-label={label}
                     />
-                    <span className="text-sm w-6 text-right">{userSkills[k]}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Constraints */}
-            <div className="card">
-              <h2 className="text-lg font-semibold">Constraints</h2>
-              <div className="mt-4 space-y-4">
-                <div className="flex items-center justify-between gap-3">
-                  <label className="text-sm font-medium">Weekly time available</label>
+            <div className="card p-5">
+              <h3 className="text-lg font-semibold text-slate-900">Practical Constraints</h3>
+              <div className="mt-4 space-y-5">
+                <div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-700">Time you can commit (1 = very light … 5 = very heavy)</span>
+                    <span className="font-semibold text-slate-800">{timeAvailable}</span>
+                  </div>
                   <input
                     type="range" min="1" max="5" step="1"
-                    value={userConstraints.timeAvail}
-                    onChange={e => setUserConstraints(c => ({ ...c, timeAvail: Number(e.target.value) }))}
-                    className="w-36"
-                  />
-                  <span className="text-sm w-6 text-right">{userConstraints.timeAvail}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <label className="text-sm">Can you travel locally if needed?</label>
-                  <input
-                    type="checkbox"
-                    checked={userConstraints.travel}
-                    onChange={e => setUserConstraints(c => ({ ...c, travel: e.target.checked }))}
+                    value={timeAvailable}
+                    onChange={e => setTimeAvailable(Number(e.target.value))}
+                    className="w-full"
+                    aria-label="Time available"
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <label className="text-sm">Ethics approval possible?</label>
-                  <input
-                    type="checkbox"
-                    checked={userConstraints.ethics}
-                    onChange={e => setUserConstraints(c => ({ ...c, ethics: e.target.checked }))}
-                  />
-                </div>
+
+                <label className="flex items-center gap-3">
+                  <input type="checkbox" className="h-4 w-4" checked={canTravel} onChange={e => setCanTravel(e.target.checked)} />
+                  <span className="text-sm text-slate-700">I can travel for brief fieldwork if needed</span>
+                </label>
+
+                <label className="flex items-center gap-3">
+                  <input type="checkbox" className="h-4 w-4" checked={canEthics} onChange={e => setCanEthics(e.target.checked)} />
+                  <span className="text-sm text-slate-700">I can obtain ethics approval quickly if required</span>
+                </label>
               </div>
             </div>
           </section>
 
           {/* Results */}
-          <section className="space-y-6">
+          <section className="space-y-4">
             <div className="flex items-end justify-between">
-              <h2 className="text-white text-xl font-semibold">Suggested Topics</h2>
-              <p className="text-slate-300 text-sm">
-                Showing {scored.length} of {candidateTopics.length} candidates
-                {requireJapan ? " • Japan-focused" : ""}.
-              </p>
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">Suggested Topics</h3>
+                <p className="text-sm text-slate-600">Sorted by overall fit. Each card explains why it ranks where it does.</p>
+              </div>
+              <div className="text-sm text-slate-500">
+                Showing <span className="font-semibold">{ranked.length}</span> topics
+              </div>
             </div>
 
-            {scored.map(({ topic, score }, idx) => (
-              <article key={topic.id} className="card relative">
-                {/* Fit score badge */}
-                <div className="absolute right-4 top-4 text-center">
-                  <div className="text-indigo-700 text-3xl font-semibold leading-none">{Math.round(score.finalScore)}</div>
-                  <div className="text-xs text-slate-500 -mt-0.5">Fit</div>
-                </div>
+            {loading && (
+              <div className="card p-6 text-slate-600">Loading topics…</div>
+            )}
+            {error && (
+              <div className="card p-6 text-red-600">Error: {error}</div>
+            )}
 
-                <h3 className="pr-20 text-lg md:text-xl font-semibold">
-                  {idx + 1}. {topic.title}
-                </h3>
-
-                {/* Approach / description (Option A) */}
-                {topic.description && (
-                  <p className="mt-1 text-slate-700">{topic.description}</p>
-                )}
-
-                {/* Tags */}
-                <div className="mt-3 -mb-2">
-                  {topic.tags.map(t => (
-                    <span key={t} className="chip bg-slate-100 border-slate-200 text-slate-700">{t}</span>
-                  ))}
-                </div>
-
-                {/* KPIs */}
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="kpi">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">Interests</div>
-                    <div className="text-lg font-semibold">{score.interestScore} / 100</div>
+            {!loading && !error && ranked.map((t, idx) => (
+              <article key={t.id ?? idx} className="card p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h4 className="text-xl font-semibold text-slate-900">{idx+1}. {t.title}</h4>
+                    <p className="mt-2 text-slate-700">{t.description}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {(t.tags || []).map(tag => <span key={tag} className="badge">{tag}</span>)}
+                    </div>
                   </div>
-                  <div className="kpi">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">Capabilities</div>
-                    <div className="text-lg font-semibold">{score.capabilityScore} / 100</div>
-                  </div>
-                  <div className="kpi">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">Constraints</div>
-                    <div className="text-lg font-semibold">{score.constraintsScore} / 100</div>
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-indigo-600">{t._score.finalScore}</div>
+                    <div className="text-xs text-slate-500 mt-1">Fit score</div>
                   </div>
                 </div>
 
-                {/* Concise explanation */}
-                <div className="mt-4 rounded-xl border bg-slate-50 text-slate-800 px-4 py-3">
-                  {suitabilityLine(score)}
+                <div className="mt-4 grid md:grid-cols-3 gap-3">
+                  <Stat label="Interests" value={t._score.interestScore} />
+                  <Stat label="Capabilities" value={t._score.capabilityScore} />
+                  <Stat label="Constraints" value={t._score.constraintsScore} />
+                </div>
+
+                <div className="mt-3 rounded-xl bg-slate-50 ring-1 ring-slate-200 p-3 text-slate-700">
+                  {suitabilityLine(t._score)}
                 </div>
               </article>
             ))}
-
-            {scored.length === 0 && (
-              <div className="card">
-                <p>No topics match your current filters. Try selecting a few broader interests or disable “Prefer topics sharing my selected tags”.</p>
-              </div>
-            )}
           </section>
-
-          <footer className="py-10 text-center text-slate-400 text-xs">
-            Built for quick, student-friendly topic discovery. No “Accept Quest”, no “Quest Plan” box, and no “Review” button by design.
-          </footer>
-        </main>
+        </div>
       );
     }
 
-    // Render safely
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    function safeRender() {
-      try { root.render(<App/>); }
-      catch (e) {
-        console.error(e);
-        document.getElementById("root").innerHTML =
-          '<div class="max-w-3xl mx-auto p-6 mt-8 rounded-xl border bg-rose-50 text-rose-700">Runtime error. Please check the console.</div>';
-      }
-    }
-    window.addEventListener("error", safeRender);
-    window.addEventListener("unhandledrejection", safeRender);
-    safeRender();
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
