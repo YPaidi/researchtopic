@@ -201,15 +201,28 @@
       return badges;
     }
 
-    function buildQuestPlan(topic) {
-      if (!topic) return [];
-      return [
-        { id: "q1", title: "Sharpen Your Question", detail: "Rewrite the topic as a precise RQ (what, who, where, when).", xp: 50 },
-        { id: "q2", title: "Mini-Literature Sprint", detail: "Collect 8–10 credible sources; summarize each in 2–3 sentences.", xp: 80 },
-        { id: "q3", title: "Method Match", detail: "Choose methods that fit your question (interview, survey, observation, experiment).", xp: 80 },
-        { id: "q4", title: "Ethics & Access", detail: "List data privacy, consent, and logistics; draft consent form if needed.", xp: 60 },
-        { id: "q5", title: "Timeline & Risk Map", detail: "Plan weekly milestones; identify 3 risks and mitigations.", xp: 80 }
-      ];
+    // NEW: concise one-sentence suitability line
+    function suitabilityLine(score) {
+      const s = Math.round(score.finalScore);
+      const interestPart = score.interestScore >= 80
+        ? "matches your interests very well"
+        : score.interestScore >= 50
+          ? "partially matches your interests"
+          : "has limited overlap with your interests";
+
+      const skillPart = score.capabilityScore >= 80
+        ? "your current skills are well aligned"
+        : score.capabilityScore >= 50
+          ? "you may need to polish some key skills"
+          : "you will need significant upskilling";
+
+      const feasibilityPart = score.constraintsScore >= 80
+        ? "and it is feasible within your time and access"
+        : score.constraintsScore >= 50
+          ? "and it is likely feasible with careful planning"
+          : "and it will require more time or access to be feasible";
+
+      return `Overall fit ${s}/100 — this topic ${interestPart}; ${skillPart}, ${feasibilityPart}.`;
     }
 
     function App() {
@@ -220,7 +233,6 @@
       const [travel, setTravel] = useState(3);
       const [ethicsReady, setEthicsReady] = useState(false);
       const [xp, setXp] = useState(0);
-      const [chosen, setChosen] = useState(null);
 
       const { topics, loading: loadingTopics, error: topicsError } = useTopics();
 
@@ -249,28 +261,8 @@
         setXp(Math.min(500, Math.round(progress * 2 + bestScore)));
       }, [progress, bestScore]);
 
-      const questPlan = useMemo(() => buildQuestPlan(chosen?.topic), [chosen]);
-
       function toggleInterest(item) {
         setSelectedInterests(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
-      }
-
-      function exportPlan() {
-        const data = {
-          chosenTopic: chosen?.topic?.title || null,
-          reason: chosen ? chosen.reason : null,
-          profile,
-          questPlan
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "research-topic-plan.json";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
       }
 
       return (
@@ -375,7 +367,7 @@
                 {step >= 4 && (
                   <section className="p-4 rounded-2xl shadow-sm border">
                     <h2 className="text-lg font-semibold mb-1">Step 4 — Your Suggested Topics</h2>
-                    <p className="text-sm text-slate-600 mb-4">Top matches are shown first. Click “Accept Quest” to lock one in and get a starter plan.</p>
+                    <p className="text-sm text-slate-600 mb-4">Top matches are shown first. Each suggestion includes a one‑sentence suitability note based on your scores.</p>
 
                     {loadingTopics && (
                       <div className="p-4 rounded-lg bg-slate-50 border text-sm text-slate-600">Loading topics…</div>
@@ -413,118 +405,3 @@
                                 <div>{Math.round(item.score.interestScore)} / 100</div>
                               </div>
                               <div className="p-2 rounded-lg bg-emerald-50">
-                                <div className="font-semibold">Capabilities</div>
-                                <div>{Math.round(item.score.capabilityScore)} / 100</div>
-                              </div>
-                              <div className="p-2 rounded-lg bg-amber-50">
-                                <div className="font-semibold">Constraints</div>
-                                <div>{Math.round(item.score.constraintsScore)} / 100</div>
-                              </div>
-                            </div>
-
-                            <div className="mt-3 flex items-center gap-2">
-                              <button
-                                className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
-                                onClick={() => setChosen({ topic: item.topic, reason: `High match with your interests (${(item.topic.tags || []).filter(t=>selectedInterests.includes(t)).join(', ') || 'your selected interests'}) and current skills.` })}
-                              >
-                                Accept Quest
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </section>
-                )}
-
-                {chosen && (
-                  <section className="p-4 rounded-2xl shadow-sm border">
-                    <h2 className="text-lg font-semibold mb-1">Your Quest Plan</h2>
-                    <p className="text-sm text-slate-600 mb-3">Locked topic: <span className="font-semibold">{chosen.topic.title}</span>. Reason: {chosen.reason}</p>
-                    <ol className="space-y-2">
-                      {buildQuestPlan(chosen?.topic).map(q => (
-                        <li key={q.id} className="p-3 rounded-lg border flex items-start gap-3">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5"/>
-                          <div>
-                            <div className="font-medium">{q.title} <span className="text-amber-600 text-xs font-semibold ml-2">+{q.xp} XP</span></div>
-                            <div className="text-sm text-slate-600">{q.detail}</div>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
-                    <div className="mt-3 flex items-center gap-2">
-                      <button onClick={exportPlan} className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 flex items-center gap-1">
-                        <Download className="w-4 h-4"/> Export Plan (JSON)
-                      </button>
-                    </div>
-                  </section>
-                )}
-              </div>
-
-              <aside className="md:col-span-4 space-y-6">
-                <div className="p-4 rounded-2xl shadow-sm border bg-gradient-to-tr from-indigo-50 to-white">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Flame className="w-5 h-5 text-indigo-600"/>
-                    <h3 className="font-semibold">Step Controls</h3>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button className={"px-3 py-1.5 rounded-lg border text-sm " + (step===1 ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50")} onClick={()=> setStep(s=> Math.max(1, s-1))}>Back</button>
-                    <button className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700" onClick={()=> setStep(s=> Math.min(4, s+1))}>
-                      {step < 4 ? "Next" : "Review"}
-                    </button>
-                  </div>
-                  <p className="text-xs text-slate-600 mt-3">Tip: You can adjust anything and the suggestions will update instantly.</p>
-                </div>
-
-                <div className="p-4 rounded-2xl shadow-sm border">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Brain className="w-5 h-5 text-emerald-600"/>
-                    <h3 className="font-semibold">How Scoring Works</h3>
-                  </div>
-                  <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
-                    <li><span className="font-medium">Interests</span> (55%): More overlapping tags → higher score.</li>
-                    <li><span className="font-medium">Capabilities</span> (35%): Gaps between required vs. your ratings reduce the score.</li>
-                    <li><span className="font-medium">Constraints</span> (10%): Time/travel/ethics penalties if misaligned.</li>
-                  </ul>
-                </div>
-
-                <div className="p-4 rounded-2xl shadow-sm border">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Target className="w-5 h-5 text-amber-600"/>
-                    <h3 className="font-semibold">Educator Notes</h3>
-                  </div>
-                  <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
-                    <li>Keep <code>topics.json</code> next to <code>index.html</code> (same folder).</li>
-                    <li>On GitHub Pages, hard-refresh after updates (Ctrl/Cmd+Shift+R) due to CDN caching.</li>
-                    <li>If the page is blank, open DevTools → Console for errors. This build will also show them on-screen.</li>
-                  </ul>
-                </div>
-              </aside>
-            </div>
-          </main>
-
-          <footer className="max-w-5xl mx-auto px-4 pb-10 pt-4 text-xs text-slate-500">
-            Built for East Asian Studies in Malaysia. Please follow your institution's research ethics and data privacy requirements.
-          </footer>
-        </div>
-      );
-    }
-
-    (function boot() {
-      try {
-        const rootEl = document.getElementById("root");
-        if (!rootEl) throw new Error("Root element #root not found");
-        if (ReactDOM && ReactDOM.createRoot) {
-          ReactDOM.createRoot(rootEl).render(<App/>);
-        } else if (ReactDOM && ReactDOM.render) {
-          ReactDOM.render(<App/>, rootEl);
-        } else {
-          throw new Error("ReactDOM not available");
-        }
-      } catch (e) {
-        window.__showError && window.__showError(e);
-      }
-    })();
-  </script>
-</body>
-</html>
